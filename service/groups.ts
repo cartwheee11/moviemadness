@@ -10,13 +10,24 @@ export async function getGroup(groupId: string, page: number) {
     WHERE ug.group_id = ${groupId};
   `) as User[]
 
-  const [group] = (await db`select * from groups where id = ${groupId}`) as Group[]
+  // const [group] = (await db`select * from groups where id = ${groupId}`) as Group[]
+  const groups = (await db`select * from groups where id = ${groupId}`) as Group[]
+  if (!groups[0]) {
+    return
+  }
+
+  const group = groups[0]
 
   const movies =
     (await db`select * from movies where group_id = ${groupId} order by id desc limit ${PAGE_LIMIT} offset ${(page - 1) * PAGE_LIMIT}`) as Movie[]
 
-  const [{ count }] = await db`select count(*) from movies where group_id = ${groupId}`
-  group.movies_count = count
+  const [countObj] = await db`select count(*) from movies where group_id = ${groupId}`
+
+  if (!countObj || !countObj.count) {
+    return
+  }
+
+  group.movies_count = countObj?.count
 
   const response: { group: Group; members: User[]; movies: Movie[] } = { group, members, movies }
 

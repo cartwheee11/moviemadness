@@ -24,5 +24,5 @@ export async function createSession(userId: string, req: VercelRequest) {
     insert into sessions(user_id, user_agent, ip_address)
     values (${userId}, ${userAgent || null}, ${ipAddress || null}) returning *
   `
-  return sessions[0]
+  return sessions[0] as Session
 }

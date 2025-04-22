@@ -31,5 +31,5 @@ export default async function withAuth(
     return res.status(401).json({ message: 'Token Expired' })
   }
 
-  next(session)
+  return next(session)
 }

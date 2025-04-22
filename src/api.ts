@@ -15,9 +15,11 @@ import type {
   GetGroupResponseBody,
   GetRatesRequestBody,
   GetRatesResponseBody,
+  LoginRequiestBody,
 } from '../types/shared'
 
-const baseURL = window.origin
+// const baseURL = import.meta.env.VERCEL_URL
+const baseURL = ''
 import { useAuth } from './stores/auth'
 
 export type Auth = { username: string; pass: string }
@@ -64,10 +66,15 @@ export async function logout() {
 }
 
 export async function login(username: string, pass: string) {
+  const reuqiest: LoginRequiestBody = {
+    username,
+    pass,
+  }
+
   const { setAuth } = useAuth()
   const res = await fetch(baseURL + '/api/auth/login', {
     method: 'POST',
-    body: JSON.stringify({ username, pass }),
+    body: JSON.stringify(reuqiest),
     headers: {
       'Content-Type': 'application/json',
     },

@@ -1,30 +1,22 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import db from '../../service/db.js'
+import type { User } from '../../service/types.js'
 import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
+import { LoginRequiestBody } from '../../types/shared.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  const body = req.body as unknown
+  const body = req.body as LoginRequiestBody
 
   if (!(body instanceof Object)) {
     res.json({ type: 'error', message: 'body is not an object' })
     return
   }
 
-  if (
-    !('username' in body) ||
-    !('pass' in body) ||
-    typeof body.username != 'string' ||
-    typeof body.pass != 'string'
-  ) {
-    res.json({ type: 'error', message: 'there is no login or pass fields in body' })
-    return
-  }
-
   const { username, pass } = body
 
-  const users = await db`select * from users where username = ${username}`
-  if (users.length) {
+  const users = (await db`select * from users where username = ${username}`) as User[]
+  if (users[0]) {
     const user = users[0]
 
     const userHash = user.pass as string

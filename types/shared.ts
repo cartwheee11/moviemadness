@@ -5,3 +5,4 @@ export type GetGroupRequiesBody = { groupId: string; page: number }
 export type EditGroupRequestBody = { params: GroupEdition; page: number }
 export type GetRatesRequestBody = { movieId: string }
 export type GetRatesResponseBody = Rate[]
+export type LoginRequiestBody = { username: string; pass: string }
