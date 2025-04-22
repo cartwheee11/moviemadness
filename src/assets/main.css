@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+@plugin 'daisyui' {
+  themes: acid --default;
+}
+
+:root {
+  /* --color-base-200: rgb(243, 243, 243); */
+  --color-neutral: black;
+}
+
+@plugin '@tailwindcss/typography';
+
+.container {
+  @apply m-auto px-4 max-w-250;
+}
+
+section {
+  @apply py-10;
+}
+
+h1 {
+  @apply text-7xl font-black;
+}
+
+h2 {
+  @apply text-3xl font-black;
+}
+
+@theme {
+}

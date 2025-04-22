@@ -1,0 +1,199 @@
+// const baseURL = import.meta.env.BASE_URL
+import router from './router'
+
+import type {
+  Group,
+  ResponseBody,
+  GroupEdition,
+  Profile,
+  GroupSettingMovieRating,
+} from '../service/types'
+
+import type {
+  EditGroupRequestBody,
+  GetGroupRequiesBody,
+  GetGroupResponseBody,
+  GetRatesRequestBody,
+  GetRatesResponseBody,
+} from '../types/shared'
+
+const baseURL = window.origin
+import { useAuth } from './stores/auth'
+
+export type Auth = { username: string; pass: string }
+
+async function fetchWithMiddleware(url: string, opts: RequestInit) {
+  const res = fetch(url, opts)
+
+  res.then(({ status }) => {
+    if (status == 401) {
+      const auth = useAuth()
+
+      router.push('/auth/login')
+      auth.removeAuth()
+    }
+  })
+
+  return res
+}
+
+export async function register(username: string, pass: string) {
+  const res = await fetch(baseURL + '/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify({ username, pass }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+
+  return await res.json()
+}
+
+export async function logout() {
+  const { removeAuth } = useAuth()
+  const res = await fetch(baseURL + '/api/auth/logout', {
+    method: 'post',
+    credentials: 'include',
+  })
+
+  console.log(res)
+
+  removeAuth()
+  return res
+}
+
+export async function login(username: string, pass: string) {
+  const { setAuth } = useAuth()
+  const res = await fetch(baseURL + '/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ username, pass }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as Record<string, string | Auth>
+  if (data.type == 'success') {
+    const auth = data.auth as Auth
+    setAuth(auth)
+  }
+
+  return data
+}
+
+export async function getProfile() {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/getProfile', {
+    credentials: 'include',
+    method: 'GET',
+  })
+
+  console.log(res)
+
+  const data: ResponseBody<{ groups: Group[]; user: Profile }> = await res?.json()
+  console.log(data)
+  return data
+}
+
+export async function createGroup(name: string) {
+  const res = await fetch(baseURL + '/api/groups/add', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({ name }),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<Group>
+
+  return data
+}
+
+export async function getGroup(groupId: string, page: number) {
+  const requiesBody: GetGroupRequiesBody = {
+    groupId,
+    page,
+  }
+
+  const res = await fetch(baseURL + '/api/groups/getGroup', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(requiesBody),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<GetGroupResponseBody>
+
+  return data
+}
+
+export async function editGroup(params: GroupEdition, page: number) {
+  const request: EditGroupRequestBody = {
+    params,
+    page,
+  }
+
+  const res = await fetch(baseURL + '/api/groups/edit', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(request),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<GetGroupResponseBody>
+
+  return data
+}
+
+export async function setMovieRate(
+  movieId: string,
+  movieComment: string,
+  movieRate: string,
+  groupId: string,
+) {
+  const params: GroupSettingMovieRating = {
+    movieId,
+    movieComment,
+    movieRate,
+    groupId,
+    aim: 'settingMovieRating',
+  }
+
+  const res = await fetch(baseURL + '/api/groups/edit', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({ params, page: 0 }),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<GetRatesResponseBody>
+
+  return data
+}
+
+export async function getRates(movieId: string) {
+  const request: GetRatesRequestBody = {
+    movieId,
+  }
+
+  const res = await fetch(baseURL + '/api/groups/getRates', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(request),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<GetRatesResponseBody>
+
+  return data
+}
