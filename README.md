@@ -16,20 +16,23 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 
 ## Project Setup
 
+need configure .env before all
+
 ```sh
 yarn
+yarn format
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-yarn dev
+yarn vercel dev
 ```
 
 ### Type-Check, Compile and Minify for Production
 
 ```sh
-yarn build
+yarn vercel build
 ```
 
 ### Lint with [ESLint](https://eslint.org/)
