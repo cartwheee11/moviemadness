@@ -1,3 +1,4 @@
 {
-  "devCommand": "yarn dev --host"
+  "devCommand": "yarn dev --host",
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }

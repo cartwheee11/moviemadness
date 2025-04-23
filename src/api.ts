@@ -104,7 +104,7 @@ export async function getProfile() {
 }
 
 export async function createGroup(name: string) {
-  const res = await fetch(baseURL + '/api/groups/add', {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/add', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -124,7 +124,7 @@ export async function getGroup(groupId: string, page: number) {
     page,
   }
 
-  const res = await fetch(baseURL + '/api/groups/getGroup', {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/getGroup', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -144,7 +144,7 @@ export async function editGroup(params: GroupEdition, page: number) {
     page,
   }
 
-  const res = await fetch(baseURL + '/api/groups/edit', {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/edit', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -172,7 +172,7 @@ export async function setMovieRate(
     aim: 'settingMovieRating',
   }
 
-  const res = await fetch(baseURL + '/api/groups/edit', {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/edit', {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -191,7 +191,7 @@ export async function getRates(movieId: string) {
     movieId,
   }
 
-  const res = await fetch(baseURL + '/api/groups/getRates', {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/getRates', {
     headers: {
       'Content-Type': 'application/json',
     },
