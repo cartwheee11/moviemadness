@@ -26,7 +26,7 @@ function onRegisterButtonClick() {
   api.register(login.value, pass.value).then(data => {
     isRegisterButtonLoading.value = false
     if (data.type == 'error') {
-      errorMessage.value = data.message
+      errorMessage.value = data.message as string
     } else {
       api.login(login.value, pass.value).then(() => {
         router.push('/groups')
