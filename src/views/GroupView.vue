@@ -2,9 +2,11 @@
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { getGroup, editGroup, setMovieRate, getRates } from '@/api';
-import type { Group, GroupMovieAddition, Movie, User, GroupMovieStatusSetting, Rate } from '../../service/types';
+import type { Group, GroupMovieAddition, Movie, User, GroupSettingMovieStatus, Rate, GroupMovieRemoval, GroupChangingSettings } from '../../types/shared';
 import ModalWindow from '@/components/ModalWindow.vue'
 import { PAGE_LIMIT } from '../../constants/shared'
+import AsyncButton from '@/components/AsyncButton.vue'
+import AvatarWithPlaceholder from '@/components/AvatarWithPlaceholder.vue';
 
 const route = useRoute()
 const group = ref<Group>()
@@ -14,6 +16,19 @@ const addMovieModal = ref(false)
 const currentPage = ref<number>(1)
 const moveisIsClear = ref<boolean>(false)
 const movieListIsBlocked = ref<boolean>(false)
+const changeSettingsInputs = ref({
+  name: '',
+  about: '',
+  avatarUrl: '' as string | null
+})
+
+const removeMovieModal = ref<boolean>(false)
+
+const movieToRemove = ref<string>('')
+
+const changeSettingsModal = ref<boolean>(false)
+
+
 
 function updateRates(rates: Rate[], movieId: string) {
   movies.value.forEach(m => {
@@ -34,16 +49,26 @@ function loadRates(m: Movie & { rates?: Rate[] }) {
   }
 }
 
-function rateMovie(id: string, comment: string | undefined, rate: number | undefined) {
-  if (group.value && comment && rate) {
-    setMovieRate(id, comment, rate + '', group.value.id).then(res => {
-      console.log(res)
-      console.log(res.data)
-      if (res.data) {
-        updateRates(res.data, id)
-      }
-    })
-  }
+function rateMovie(m: Movie & { clicked?: boolean, rates?: Rate[], stars?: number, comment?: string }) {
+  return new Promise<void>((resolve, reject) => {
+    console.log(m.comment, m.stars)
+    if (group.value && m.comment && m.stars) {
+      setMovieRate(m.id, m.comment, m.stars + '', group.value.id).then(res => {
+        console.log(res)
+        console.log(res.data)
+        if (res.data) {
+          updateRates(res.data, m.id)
+          m.comment = ''
+          resolve()
+        } else {
+          reject()
+        }
+      })
+    } else {
+      reject()
+    }
+  })
+
 }
 
 watch(movies, () => {
@@ -74,38 +99,85 @@ function updateGroup(params: { group?: Group, movies?: Movie[], members?: User[]
   }
 }
 
-function onAddMovieClick() {
+watch(group, () => {
   if (group.value) {
-    const request: GroupMovieAddition = {
-      groupId: group.value.id,
-      aim: "movieAddition",
-      movieName: addMovieName.value,
-      movieDesc: addMovieComment.value
-    }
-
-    editGroup(request, currentPage.value).then((res) => {
-      if (res.data) {
-        updateGroup(res.data)
-      }
-    })
+    changeSettingsInputs.value.about = group.value.desc
+    changeSettingsInputs.value.avatarUrl = group.value.avatar_url
+    changeSettingsInputs.value.name = group.value.name
   }
+
+})
+
+function onAddMovieClick() {
+  return new Promise<void>((resolve) => {
+    if (group.value) {
+      const request: GroupMovieAddition = {
+        groupId: group.value.id,
+        aim: "movieAddition",
+        movieName: addMovieName.value,
+        movieDesc: addMovieComment.value
+      }
+
+      editGroup(request, currentPage.value).then((res) => {
+        if (res.data) {
+          updateGroup(res.data)
+          addMovieModal.value = false
+          addMovieName.value = ''
+          addMovieComment.value = ''
+          resolve()
+        }
+      })
+    } else {
+      resolve()
+    }
+  })
+
+
 }
 
 function onWatchClick(id: string) {
-  if (group.value) {
-    const request: GroupMovieStatusSetting = {
-      groupId: group.value.id,
-      aim: 'movieStatusSetting',
-      movieId: id,
-      watched: true
-    }
-
-    editGroup(request, currentPage.value).then(res => {
-      if (res.data) {
-        updateGroup(res.data)
+  return new Promise<unknown>((resolve, reject) => {
+    if (group.value) {
+      const request: GroupSettingMovieStatus = {
+        groupId: group.value.id,
+        aim: 'settingMovieStatus',
+        movieId: id,
+        watched: true
       }
-    })
-  }
+
+      editGroup(request, currentPage.value).then(res => {
+        if (res.data) {
+          updateGroup(res.data)
+          resolve(true)
+        }
+      })
+    } else {
+      reject(true)
+    }
+  })
+
+}
+
+function onUnwatchClick(id: string) {
+  return new Promise<unknown>((resolve, reject) => {
+    if (group.value) {
+      const request: GroupSettingMovieStatus = {
+        groupId: group.value.id,
+        aim: 'settingMovieStatus',
+        movieId: id,
+        watched: false
+      }
+
+      editGroup(request, currentPage.value).then(res => {
+        if (res.data) {
+          updateGroup(res.data)
+          resolve(true)
+        }
+      })
+    } else {
+      reject(true)
+    }
+  })
 }
 
 function loadGroup() {
@@ -133,74 +205,138 @@ onMounted(() => {
   loadGroup()
 })
 
+function onRemoveMovieButtonClick() {
+  return new Promise<void>((resolve) => {
+    if (!group.value) {
+      return resolve()
+    }
+
+    const params: GroupMovieRemoval = {
+      groupId: group.value?.id,
+      movieId: movieToRemove.value,
+      aim: 'movieRemoval'
+    }
+
+    editGroup(params, currentPage.value).then((res) => {
+      removeMovieModal.value = false
+      if (!res || !res.data) {
+        return resolve()
+      }
+      updateGroup(res.data)
+
+      resolve()
+    })
+  })
+}
+
+function onChangeSettingsButtonClick() {
+  return new Promise<void>(resolve => {
+    if (!group.value) {
+      return
+    }
+    const { name, about, avatarUrl } = changeSettingsInputs.value
+    const params: GroupChangingSettings = {
+      name, about, avatarUrl, aim: 'changingSettings', groupId: group.value.id
+    }
+
+    editGroup(params, currentPage.value).then(res => {
+      if (res.data) {
+        updateGroup(res.data)
+        changeSettingsModal.value = false
+        resolve()
+      } else {
+        changeSettingsModal.value = false
+        resolve()
+      }
+    })
+  })
+}
+
 </script>
+
+
 
 <template>
   <ModalWindow @hide="addMovieModal = false" :visible="addMovieModal">
     <h3 class="font-black text-xl pb-4">Добавить фильм</h3>
     <p><input v-model="addMovieName" class="input" type="text" placeholder="Название фильма"></p>
     <p><input v-model="addMovieComment" class="input mt-4" type="text" placeholder="Комментарий"></p>
-    <p><button @click="onAddMovieClick" class="btn w-full mt-4">создать</button></p>
+    <p>
+      <AsyncButton @click="() => onAddMovieClick()" class="btn w-full mt-4">
+        <span>
+          Создать
+        </span>
+      </AsyncButton>
+    </p>
+  </ModalWindow>
+
+  <ModalWindow @hide="removeMovieModal = false" :visible="removeMovieModal">
+    <h3 class="font-black text-xl">Удалить фильм?</h3>
+    <p class="mt-4">Это действие нельзя отменить</p>
+    <AsyncButton class="btn btn-primary mt-4" @click="() => onRemoveMovieButtonClick()">
+      Удалить
+    </AsyncButton>
+  </ModalWindow>
+
+  <ModalWindow @hide="changeSettingsModal = false" :visible="changeSettingsModal">
+    <h3 class="font-black text-xl">Настройте группу</h3>
+    <input type="text" v-model="changeSettingsInputs.name" class="input mt-4 w-full" placeholder="Имя группы">
+    <input type="text" v-model="changeSettingsInputs.about" class="input mt-4 w-full" placeholder="Описание">
+    <input type="text" v-model="changeSettingsInputs.avatarUrl" class="input mt-4 w-full"
+      placeholder="Ссылка на картинку">
+    <AsyncButton class="mt-4 btn w-full" @click="() => onChangeSettingsButtonClick()">Отправить</AsyncButton>
   </ModalWindow>
   <div class="container">
-    <section class="header-section flex gap-10">
-      <div class="avatar w-50" v-if="group?.avatar_url">
-        <div class="ring-2 ring-offset-2 ring-base-content/10 rounded-2xl">
-          <img class="" :src="group.avatar_url" alt="">
-        </div>
-      </div>
-      <div class="avatar w-50" v-else>
-        <div class="ring-2 ring-offset-2 ring-base-content/10 rounded-2xl">
-          <img src="../assets/img/default-group-avatar.png" alt="">
-        </div>
-      </div>
-      <div class="desk">
-
-        <h1 v-if="group?.name">{{ group?.name }}</h1>
-        <div class="" v-else>
+    <section
+      class="header-section lg:items-start lg:flex-row flex-col items-center flex gap-4 lg:gap-10 py-10 lg:py-20 ">
+      <AvatarWithPlaceholder class="w-20 lg:w-50 lg:h-50 h-20 text-7xl" :url="group?.avatar_url">
+        <span class="text-7xl">{{ group?.name[0].toUpperCase() }}</span>
+      </AvatarWithPlaceholder>
+      <div class="desk lg:text-left text-center flex flex-col items-center lg:items-start">
+        <h1 class=" max-w-4/5" v-if="group?.name">{{ group?.name }}</h1>
+        <div class="flex flex-col items-center lg:items-start" v-else>
           <div class="skeleton h-20 w-70"></div>
           <div class="skeleton h-10 w-50 mt-4"></div>
         </div>
-
-
         <p class="mt-4">{{ group?.desc }}</p>
+        <p><button @click="changeSettingsModal = true" class="btn mt-4">Настроить</button></p>
       </div>
     </section>
 
     <section v-if="movies.length" class="">
       <h2 class="text-3xl font-black mb-5">Идеи для просмотра</h2>
-      <button @click="addMovieModal = true"
-        class="mb-4 btn bg-base-100 border-1 rounded-2xl border-base-content/10 w-full h-full text-4xl py-5">+</button>
-      <div
-        class="table-wrapper shadow-md overflow-x-auto rounded-2xl rounded-box border border-base-content/5 bg-base-100">
-        <table class="table" :class="{ 'opacity-50': movieListIsBlocked }">
+      <button @click="addMovieModal = true" class="add-table-row-button mb-4">+</button>
+      <div class="table-wrapper">
+        <table class="table table-lg" :class="{ 'opacity-50': movieListIsBlocked }">
           <thead>
             <tr>
-              <th></th>
-              <th class="w-1/5">Название</th>
-              <th class="w-1/5">Комментарий</th>
-              <th class="w-1/5">Дата</th>
-              <th class="w-1/5">Добавил</th>
-              <th class="w-1/5 align-center text-center">Посмотреть</th>
+              <th class="hidden lg:table-cell"></th>
+              <th class="lg:w-1/6 w-full">Название</th>
+              <th class="w-1/6 hidden lg:table-cell">Комментарий</th>
+              <th class="w-1/6 hidden lg:table-cell">Дата</th>
+              <th class="w-1/6 hidden lg:table-cell">Добавил</th>
+              <th class="lg:w-1/6 align-center text-center w-0 !p-0">Статус</th>
+              <th class="lg:w-1/6 align-center text-center w-0 !p-0">Удалить</th>
             </tr>
           </thead>
 
           <tbody v-for="(m, i) in movies" :key="m.id">
 
             <tr></tr>
-            <tr class="hover:bg-base-content/2 cursor-pointer group" @click="m.clicked = !m.clicked; loadRates(m)">
-              <td>{{ (currentPage - 1) * PAGE_LIMIT + i + 1 }}</td>
-              <th class="py-6">{{ m.name }}</th>
-              <td class="max-w-50" :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
-              <td>{{ m.created_at }}</td>
-              <td>{{ members?.get(m.user_id).username }}</td>
-              <td class="w-50 align-center text-center">
-                <button v-if="!m.is_watched" @click="onWatchClick(m.id)"
-                  class="btn btn-info btn-soft group-hover:btn-info">
-                  Посмотреть
-                </button>
+            <tr class="hover:bg-base-content/2 cursor-pointer group"
+              @click.prevent="m.clicked = !m.clicked; loadRates(m)">
+              <td class="hidden lg:table-cell">{{ (currentPage - 1) * PAGE_LIMIT + i + 1 }}</td>
+              <th class="py-6 w-max">{{ m.name }}</th>
+              <td class="max-w-50 hidden lg:table-cell" :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
+              <td class="hidden lg:table-cell">{{ m.created_at }}</td>
+              <td class="hidden lg:table-cell">{{ members?.get(m.user_id).username }}</td>
+              <td class="!m-0 lg:w-50 align-center text-center !p-1">
+                <AsyncButton v-if="!m.is_watched" @click="() => onWatchClick(m.id)" class="btn btn-warning">
+                  <span class="hidden lg:inline">Посмотреть</span>
+                  <span class="lg:hidden">»</span>
+                </AsyncButton>
 
-                <div v-else class="badge badge-soft badge-primary group-hover:badge-base">
+                <div v-else class="badge badge-success group-hover:badge-base">
                   <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
                       <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-linecap="square"
@@ -209,50 +345,62 @@ onMounted(() => {
                         stroke-miterlimit="10" stroke-width="2"></polyline>
                     </g>
                   </svg>
-                  Посмотрели
+                  <span class="hidden lg:inline">Посмотрли</span>
+                  <!-- <span class="lg:hidden">»</span> -->
                 </div>
+              </td>
+              <td class="text-center delete-cell">
+                <button @click.stop="movieToRemove = m.id; removeMovieModal = true" class="btn btn-error">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
+                    viewBox="0 0 16 16">
+                    <path
+                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                    <path
+                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                  </svg>
+                </button>
               </td>
             </tr>
             <tr v-if="m.clicked && m.is_watched" class="">
-              <td colspan="6" class="py-4 w-full">
+              <td colspan="7" class="py-4 w-full">
                 <div v-if="!m.rates" class="">
-                  <span class="loading loading-dots loading-xl mx-auto"></span>
+                  <div class="skeleton w-full h-20 mb-4"></div>
                 </div>
 
-                <div class="" v-else>
-                  <div class="m-2" v-for="r in m.rates" :key="r.id">
-                    <div class="message flex items-end">
+                <div v-else-if="m.rates.length == 0" class="p-10 pb-12 text-center">
+                  <span class="font-bold">Напиши первый отзыв</span>
+                </div>
 
-                      <div class="avatar w-10 mr-4" v-if="members.get(m.user_id).avatar_url">
-                        <div class="ring-2 ring-offset-2 ring-base-content/10 rounded-2xl">
-                          <img class="" :src="members.get(m.user_id).avatar_url" alt="">
-                        </div>
-                      </div>
-                      <div class="avatar w-10 mr-4" v-else>
-                        <div class="ring-2 ring-offset-2 ring-base-content/10 rounded-2xl">
-                          <img src="../assets/img/default-avatar.png" alt="">
-                        </div>
-                      </div>
+                <div class="pb-4" v-else>
+                  <div class="m-2 mb-4" v-for="r in m.rates" :key="r.id">
+                    <div class="message flex items-end">
+                      <AvatarWithPlaceholder class="h-10 w-10" :url="members.get(m.user_id).avatar">
+                        <span>{{ members.get(m.user_id).username[0].toUpperCase() }}</span>
+                      </AvatarWithPlaceholder>
 
                       <div class="chat chat-start">
                         <div class="chat-header">
-                          <b class="ml-4"> {{ members.get(m.user_id).username }}</b>
+                          <b class="ml-4"> {{ members.get(r.user_id).username }}</b>
                           <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                         </div>
-                        <div class="chat-bubble chat-bubble-accent">{{ r.comment }}.</div>
+                        <div class="chat-bubble chat-bubble-success text-xl">{{ r.comment }}.</div>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="flex w-full gap-4">
-                  <input type="text" class="input grow" v-model="m.comment" placeholder="комментарий">
+                <div class="flex w-full gap-4 items-center flex-col lg:flex-row">
+                  <input type="text" class="input input-lg grow" v-model="m.comment" placeholder="комментарий">
                   <div class="rating rating-lg">
                     <input @click="m.stars = i" v-for="i in 10" :key="i" type="radio" name="rating-10"
-                      class="mask mask-star-2 bg-primary" aria-label="1 star" />
+                      class="mask mask-star-2" aria-label="1 star" />
                   </div>
                 </div>
-                <button @click="rateMovie(m.id, m.comment, m.stars)"
-                  class="btn w-full mt-4 btn-soft btn-primary">Оценить</button>
+                <AsyncButton @click="() => rateMovie(m)" class="btn btn-lg w-full mt-4 btn-success">Оценить
+                </AsyncButton>
+                <!-- <div class="divider"></div> -->
+                <AsyncButton @click="() => onUnwatchClick(m.id)" class="mt-4 btn btn-lg w-full">
+                  Не просмотрено
+                </AsyncButton>
               </td>
             </tr>
           </tbody>
@@ -282,5 +430,6 @@ onMounted(() => {
     </div>
 
   </div>
+  <br>
 
 </template>

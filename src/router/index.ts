@@ -4,6 +4,7 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import GroupView from '@/views/GroupView.vue'
+import InviteView from '@/views/InviteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,12 @@ const router = createRouter({
       path: '/groups/:id',
       name: 'group',
       component: GroupView,
+    },
+
+    {
+      path: '/invite/:token',
+      name: 'invite',
+      component: InviteView,
     },
   ],
 })

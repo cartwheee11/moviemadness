@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  // проверки типов
   const body = req.body as unknown
 
   if (!(body instanceof Object)) {
@@ -42,7 +41,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   const { token } = await createSession(userId, req)
 
   res.setHeader('Set-Cookie', [
-    `session_token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=43800;`,
+    `session_token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=315360000;`,
   ])
 
   res.json({ type: 'success', data: { username } })

@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import db from '../../service/db.js'
-import type { User } from '../../service/types.js'
+import type { User } from '../../types/shared.js'
 import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
-import { LoginRequiestBody } from '../../types/shared.js'
+import { LoginRequiestBody } from '../../types/contracts.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   const body = req.body as LoginRequiestBody
@@ -27,7 +27,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     if (comparison) {
       const { token } = await createSession(userId, req)
       res.setHeader('Set-Cookie', [
-        `session_token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=43800;`,
+        `session_token=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=31536000;`,
       ])
       res.json({ type: 'success', auth: { username } })
     } else {

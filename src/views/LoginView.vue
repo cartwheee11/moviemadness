@@ -42,8 +42,6 @@ function onLoginClick() {
 
   <div class="container">
     <div class="mt-10 mx-auto max-w-100 ">
-
-
       <div class="login-form flex flex-col gap-4">
         <div class="flex justify-center">
           <div class="join">

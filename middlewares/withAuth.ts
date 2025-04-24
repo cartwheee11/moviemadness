@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { auth } from '../service/auth.js'
-import type { Session } from '../service/types.js'
+import type { Session } from '../types/shared.js'
 import db from '../service/db.js'
 
 export default async function withAuth(

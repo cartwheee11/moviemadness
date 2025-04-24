@@ -1,67 +1,35 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import db from '../../service/db.js'
-import { ResponseBody, GroupMovieAddition } from '../../service/types.js'
-import withAuth from '../../middlewares/withAuth.js'
-import type { GroupMovieStatusSetting, GroupSettingMovieRating, Rate } from '../../service/types.js'
-import { getGroup } from '../../service/groups.js'
-import {
-  EditGroupRequestBody,
-  GetGroupResponseBody,
-  GetRatesResponseBody,
-} from '../../types/shared.js'
+import { EditGroupRequestBody } from '../../types/contracts.js'
+
+import setMovieStatus from '../../service/edit-group/setMovieStatus.js'
+import setMovieRating from '../../service/edit-group/setMovieRating.js'
+import addMovie from '../../service/edit-group/addMovie.js'
+import removeMovie from '../../service/edit-group/removeMovie.js'
+import changeSettings from '../../service/edit-group/changeSettings.js'
+import addMember from '../../service/edit-group/addMember.js'
+import { ResponseBody } from '../../types/shared.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  withAuth(req, res, async ({ user_id }) => {
-    const body = req.body as EditGroupRequestBody
+  const body = req.body as EditGroupRequestBody
 
-    console.log(body.params)
+  console.log(body.params)
 
-    if (body.params.aim == 'movieAddition') {
-      const params = body.params as GroupMovieAddition
-
-      console.log(body)
-
-      await db`
-          INSERT INTO movies (name, "desc", user_id, group_id)
-          values (${params.movieName}, ${params.movieDesc}, ${user_id}, ${params.groupId})
-      `
-
-      const group = await getGroup(params.groupId, body.page)
-
-      const response: ResponseBody<GetGroupResponseBody> = {
-        message: 'success',
-        data: group,
-      }
-
-      return res.status(200).json(response)
-    } else if (body.params.aim == 'movieStatusSetting') {
-      const params = body.params as GroupMovieStatusSetting
-      await db`update movies set is_watched = ${params.watched} where id = ${params.movieId}`
-
-      const group = await getGroup(params.groupId, body.page)
-
-      const response: ResponseBody<GetGroupResponseBody> = {
-        message: 'success',
-        data: group,
-      }
-
-      return res.status(200).json(response)
-    } else if (body.params.aim == 'settingMovieRating') {
-      const params = body.params as GroupSettingMovieRating
-      const groupId = body.params.groupId
-
-      await db`insert into rates (user_id, movie_id, group_id, rate, comment)
-      values (${user_id}, ${params.movieId}, ${groupId}, ${params.movieRate}, ${params.movieComment})`
-      const dbResponse =
-        (await db`select * from rates where movie_id = ${params.movieId}`) as Rate[]
-
-      return res.status(200).json({ message: 'success', data: dbResponse })
+  if (body.params.aim == 'movieAddition') {
+    await addMovie(req, res)
+  } else if (body.params.aim == 'settingMovieStatus') {
+    await setMovieStatus(req, res)
+  } else if (body.params.aim == 'settingMovieRating') {
+    await setMovieRating(req, res)
+  } else if (body.params.aim == 'movieRemoval') {
+    await removeMovie(req, res)
+  } else if (body.params.aim == 'changingSettings') {
+    await changeSettings(req, res)
+  } else if (body.params.aim == 'memberAddition') {
+    await addMember(req, res)
+  } else {
+    const response: ResponseBody = {
+      message: 'invalid body data',
     }
-
-    const response: ResponseBody<GetRatesResponseBody> = {
-      message: 'success',
-    }
-
-    res.status(200).json(response)
-  })
+    res.status(422).json(response)
+  }
 }

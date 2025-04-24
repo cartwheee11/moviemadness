@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue';
-
+import AvatarWithPlaceholder from '../components/AvatarWithPlaceholder.vue'
 
 
 onMounted(async () => {
@@ -12,5 +12,6 @@ onMounted(async () => {
 <template>
   <main>
     <TopHeader />
+    <AvatarWithPlaceholder placeholder="string" />
   </main>
 </template>

@@ -7,18 +7,20 @@ import type {
   GroupEdition,
   Profile,
   GroupSettingMovieRating,
-} from '../service/types'
+  GroupMemberAddition,
+} from '../types/shared'
 
 import type {
   EditGroupRequestBody,
+  FindInviteRequestBody,
+  FindInviteResponseBody,
   GetGroupRequiesBody,
   GetGroupResponseBody,
   GetRatesRequestBody,
   GetRatesResponseBody,
   LoginRequiestBody,
-} from '../types/shared'
+} from '../types/contracts'
 
-// const baseURL = import.meta.env.VERCEL_URL
 const baseURL = ''
 import { useAuth } from './stores/auth'
 
@@ -40,6 +42,7 @@ async function fetchWithMiddleware(url: string, opts: RequestInit) {
 }
 
 export async function register(username: string, pass: string) {
+  const { setAuth } = useAuth()
   const res = await fetch(baseURL + '/api/auth/register', {
     method: 'POST',
     body: JSON.stringify({ username, pass }),
@@ -49,7 +52,13 @@ export async function register(username: string, pass: string) {
     credentials: 'include',
   })
 
-  return await res.json()
+  const data = (await res.json()) as Record<string, string | Auth>
+  if (data.type == 'success') {
+    const auth = data.auth as Auth
+    setAuth(auth)
+  }
+
+  return await data
 }
 
 export async function logout() {
@@ -155,6 +164,8 @@ export async function editGroup(params: GroupEdition, page: number) {
 
   const data = (await res.json()) as ResponseBody<GetGroupResponseBody>
 
+  console.log(data)
+
   return data
 }
 
@@ -201,6 +212,46 @@ export async function getRates(movieId: string) {
   })
 
   const data = (await res.json()) as ResponseBody<GetRatesResponseBody>
+
+  return data
+}
+
+export async function findInvite(token: string) {
+  const request: FindInviteRequestBody = {
+    token,
+  }
+
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/findInvite', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(request),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<FindInviteResponseBody>
+
+  return data
+}
+
+export async function acceptInvite(token: string, groupId: string) {
+  const params: GroupMemberAddition = {
+    aim: 'memberAddition',
+    groupId,
+    token,
+  }
+
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/edit', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({ params, page: 0 }),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody
 
   return data
 }

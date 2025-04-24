@@ -1,9 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import db from '../../service/db.js'
-import { ResponseBody } from '../../service/types.js'
+import { ResponseBody } from '../../types/shared.js'
 import withAuth from '../../middlewares/withAuth.js'
 import { getGroup } from '../../service/groups.js'
-import type { GetGroupRequiesBody, GetGroupResponseBody } from '../../types/shared.js'
+import type { GetGroupRequiesBody, GetGroupResponseBody } from '../../types/contracts.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   withAuth(req, res, async (session) => {

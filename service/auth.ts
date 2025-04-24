@@ -1,6 +1,6 @@
 import db from './db.js'
 import type { VercelRequest } from '@vercel/node'
-import type { Session } from '../service/types.js'
+import type { Session } from '../types/shared.js'
 
 export async function auth(req: VercelRequest) {
   const token = req.cookies.session_token as string | undefined

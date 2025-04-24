@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @plugin 'daisyui' {
-  themes: acid --default;
+  themes: lemonade --default;
 }
 
 :root {
@@ -14,12 +14,12 @@
   @apply m-auto px-4 max-w-250;
 }
 
-section {
+/* section {
   @apply py-10;
-}
+} */
 
 h1 {
-  @apply text-7xl font-black;
+  @apply text-3xl lg:text-7xl font-black;
 }
 
 h2 {
@@ -27,4 +27,20 @@ h2 {
 }
 
 @theme {
+}
+
+table.wrapper {
+  @apply overflow-x-auto rounded-2xl rounded-box border border-base-content/5 bg-base-100;
+}
+
+table.table {
+  @apply bg-base-200/50;
+}
+
+.add-table-row-button {
+  @apply btn bg-base-200/50 rounded-2xl border-base-content/10 w-full h-full text-4xl py-5 border-none;
+}
+
+.skeleton {
+  @apply bg-base-200/50;
 }
