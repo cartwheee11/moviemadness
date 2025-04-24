@@ -36,6 +36,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
   const dbResponse =
     await db`insert into users (username, pass) values (${username}, ${hash}) returning id`
+  if (!dbResponse[0]) return
   const userId = dbResponse[0].id
 
   const { token } = await createSession(userId, req)
