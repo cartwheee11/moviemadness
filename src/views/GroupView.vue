@@ -321,8 +321,6 @@ function onChangeSettingsButtonClick() {
           </thead>
 
           <tbody v-for="(m, i) in movies" :key="m.id">
-
-
             <tr class="hover:bg-base-content/2 cursor-pointer group"
               @click.prevent="m.clicked = !m.clicked; loadRates(m)">
               <td class="hidden lg:table-cell">{{ (currentPage - 1) * PAGE_LIMIT + i + 1 }}</td>
@@ -351,7 +349,7 @@ function onChangeSettingsButtonClick() {
               </td>
               <td class="text-center delete-cell">
                 <button @click.stop="movieToRemove = m.id; removeMovieModal = true"
-                  class="btn btn-outline btn-square btn-error borded-1">
+                  class="btn btn-outline btn-square btn-error border-1">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
                     viewBox="0 0 16 16">
                     <path
@@ -375,7 +373,7 @@ function onChangeSettingsButtonClick() {
                 <div class="pb-4" v-else>
                   <div class="m-2 mb-4" v-for="r in m.rates" :key="r.id">
                     <div class="message flex items-end">
-                      <AvatarWithPlaceholder class="h-10 w-10" :url="members.get(m.user_id).avatar">
+                      <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="members.get(m.user_id).avatar">
                         <span>{{ members.get(m.user_id).username[0].toUpperCase() }}</span>
                       </AvatarWithPlaceholder>
 
