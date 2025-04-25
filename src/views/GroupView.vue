@@ -23,12 +23,10 @@ const changeSettingsInputs = ref({
 })
 
 const removeMovieModal = ref<boolean>(false)
-
 const movieToRemove = ref<string>('')
-
 const changeSettingsModal = ref<boolean>(false)
 
-
+const origin = ref(window.origin)
 
 function updateRates(rates: Rate[], movieId: string) {
   movies.value.forEach(m => {
@@ -268,6 +266,7 @@ function onChangeSettingsButtonClick() {
         </span>
       </AsyncButton>
     </p>
+
   </ModalWindow>
 
   <ModalWindow @hide="removeMovieModal = false" :visible="removeMovieModal">
@@ -280,10 +279,35 @@ function onChangeSettingsButtonClick() {
 
   <ModalWindow @hide="changeSettingsModal = false" :visible="changeSettingsModal">
     <h3 class="font-black text-xl">Настройте группу</h3>
-    <input type="text" v-model="changeSettingsInputs.name" class="input mt-4 w-full" placeholder="Имя группы">
-    <input type="text" v-model="changeSettingsInputs.about" class="input mt-4 w-full" placeholder="Описание">
-    <input type="text" v-model="changeSettingsInputs.avatarUrl" class="input mt-4 w-full"
-      placeholder="Ссылка на картинку">
+
+    <fieldset class="fieldset w-full text-left mt-2">
+      <legend class="fieldset-legend">Имя группы</legend>
+      <input type="text" v-model="changeSettingsInputs.name" class="input w-full">
+    </fieldset>
+
+    <fieldset class="fieldset w-full text-left mt-2">
+      <legend class="fieldset-legend">Описание</legend>
+      <input type="text" v-model="changeSettingsInputs.about" class="input w-full" placeholder="Описание">
+    </fieldset>
+
+    <fieldset class="fieldset w-full text-left mt-2">
+      <legend class="fieldset-legend">Ссылка на аватарку</legend>
+      <input type="text" v-model="changeSettingsInputs.avatarUrl" class="input w-full" placeholder="Ссылка на картинку">
+    </fieldset>
+
+
+
+    <fieldset class="fieldset w-full text-left mt-2">
+      <legend class="fieldset-legend">Ссылка-приглашение</legend>
+
+
+
+      <textarea rows="4" v-if="group" type="text" :value="`${origin}/invite/${group.invite_token}`"
+        class="textarea w-full" placeholder="Type here"></textarea>
+      <div v-else class="skeleton w-full h-10"></div>
+
+    </fieldset>
+
     <AsyncButton class="mt-4 btn w-full" @click="() => onChangeSettingsButtonClick()">Отправить</AsyncButton>
   </ModalWindow>
   <div class="container">

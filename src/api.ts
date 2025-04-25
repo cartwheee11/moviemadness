@@ -221,18 +221,22 @@ export async function findInvite(token: string) {
     token,
   }
 
-  const res = await fetchWithMiddleware(baseURL + '/api/groups/findInvite', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(request),
-    credentials: 'include',
-  })
+  try {
+    const res = await fetch(baseURL + '/api/groups/findInvite', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(request),
+      credentials: 'include',
+    })
 
-  const data = (await res.json()) as ResponseBody<FindInviteResponseBody>
+    const data = (await res.json()) as ResponseBody<FindInviteResponseBody>
 
-  return data
+    return data
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 export async function acceptInvite(token: string, groupId: string) {

@@ -1,12 +1,9 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
 import AvatarWithPlaceholder from '../components/AvatarWithPlaceholder.vue'
+import { useRouter } from 'vue-router'
 
-
-onMounted(async () => {
-
-
-})
+const router = useRouter()
+router.push('/profile')
 </script>
 
 <template>

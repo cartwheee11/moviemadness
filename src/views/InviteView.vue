@@ -4,6 +4,7 @@ import { acceptInvite, findInvite } from '@/api';
 import type { Group, ResponseBody } from '../../types/shared';
 import { onMounted, ref } from 'vue';
 import AvatarWithPlaceholder from '@/components/AvatarWithPlaceholder.vue';
+import { useAuth } from '@/stores/auth';
 
 const route = useRoute()
 const router = useRouter()
@@ -22,6 +23,11 @@ function onAcceptButtonClick() {
 }
 
 onMounted(() => {
+  const auth = useAuth();
+
+  if (!auth.auth) {
+
+  }
   findInvite(token).then(res => {
     serverResponse.value = res
   })
@@ -32,23 +38,34 @@ onMounted(() => {
 
 <template>
   <div class="container mt-50">
-    <br class="mt-50">
+    <div v-if="!useAuth().auth" role="alert"
+      class="alert alert-vertical sm:alert-horizontal alert-error alert-soft mt-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>Чтобы принять пригланение, необходимо авторизоваться</span>
+      <div>
+        <button class="btn btn-error">Авторизоваться</button>
+      </div>
+    </div>
 
-    <div v-if="!serverResponse" class="skeleton w-full h-100"></div>
-    <div v-else-if="serverResponse.message === 'bad token'" class="">
+
+    <div v-if="!serverResponse" class="skeleton w-full h-100 mt-4"></div>
+    <div v-else-if="serverResponse.message === 'bad token'" class="mt-4">
       <h2 class="text-center mt-50">Неверная <br> ссылка</h2>
     </div>
-    <div v-else-if="serverResponse.message = 'success'">
-      <div class="card w-full bg-base-100 shadow-sm mx-auto">
+    <div v-else-if="serverResponse.message = 'success'" class="mt-4">
+      <div class="card w-full bg-base-300  mx-auto">
         <div class="card-body">
           <div class="flex justify-between">
-            <div class="group-wrapper max-w-200 flex gap-4">
+            <div class="group-wrapper max-w-200 flex gap-4 flex-col lg:flex-row">
               <AvatarWithPlaceholder class="w-50 h-50" :url="serverResponse.data?.avatar_url">
                 <span class="text-7xl">{{ serverResponse.data?.name[0].toUpperCase() }}</span>
               </AvatarWithPlaceholder>
 
               <div class="info">
-                <span class="badge badge-warning">приглашение</span>
+                <span class="badge badge-neutral">приглашение</span>
                 <p class="text-5xl font-black">{{ serverResponse.data?.name }}</p>
                 <p class="mt-4 text-xl">{{ serverResponse.data?.desc }}</p>
               </div>
@@ -56,11 +73,11 @@ onMounted(() => {
             </div>
           </div>
           <div class="mt-6">
-            <button @click="onAcceptButtonClick" class="btn btn-block btn-xl">Принять</button>
+            <button @click="onAcceptButtonClick" class="btn btn-block btn-neutral btn-xl">Принять</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-
+  <br>
 </template>

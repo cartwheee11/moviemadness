@@ -92,6 +92,7 @@ export interface Group extends Row {
   avatar_url: string | null
   desc: string
   movies_count: string
+  invite_token: string
 }
 
 export interface User extends Row {

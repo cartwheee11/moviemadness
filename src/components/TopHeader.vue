@@ -14,8 +14,9 @@ function onLogoutClick() {
 </script>
 
 <template>
-  <div class="container">
-    <nav class="shadow-xs navbar flex justify-between py-4 items-center">
+
+  <nav class="shadow-xs">
+    <div class="container flex justify-between py-4 items-center">
       <RouterLink to="/profile"><b>moviemadness</b></RouterLink>
       <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn">войти</button></RouterLink>
 
@@ -23,6 +24,7 @@ function onLogoutClick() {
         {{ authStore.auth?.username }}
         <button @click="onLogoutClick" class="btn ml-4">выйти</button>
       </div>
-    </nav>
-  </div>
+    </div>
+  </nav>
+
 </template>
