@@ -29,7 +29,7 @@ function onRegisterButtonClick() {
       errorMessage.value = data.message as string
     } else {
       api.login(login.value, pass.value).then(() => {
-        router.push('/groups')
+        router.push('/profile')
       })
     }
   })
