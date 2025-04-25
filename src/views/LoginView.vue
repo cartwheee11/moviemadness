@@ -44,14 +44,14 @@ function onLoginClick() {
     <div class="mt-10 mx-auto max-w-100 ">
       <div class="login-form flex flex-col gap-4">
         <div class="flex justify-center">
-          <div class="join">
+          <div class="join overflow-hidden">
             <button class="btn join-item btn-neutral">Войти</button>
             <RouterLink to="/auth/register"><button class="btn join-item">Зарегистрироваться</button></RouterLink>
           </div>
         </div>
 
         <p>
-          <label class="input  w-full" type="text" :class="{ 'input-error': !val.login }">
+          <label class="input w-full" type="text" :class="{ 'input-error': !val.login }">
             Логин
             <input class="grow" @input="val.login = true" v-model="login" type="input" placeholder="вася123">
           </label>

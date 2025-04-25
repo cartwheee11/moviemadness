@@ -322,7 +322,7 @@ function onChangeSettingsButtonClick() {
 
           <tbody v-for="(m, i) in movies" :key="m.id">
 
-            <tr></tr>
+
             <tr class="hover:bg-base-content/2 cursor-pointer group"
               @click.prevent="m.clicked = !m.clicked; loadRates(m)">
               <td class="hidden lg:table-cell">{{ (currentPage - 1) * PAGE_LIMIT + i + 1 }}</td>
@@ -336,7 +336,7 @@ function onChangeSettingsButtonClick() {
                   <span class="lg:hidden">»</span>
                 </AsyncButton>
 
-                <div v-else class="badge badge-success group-hover:badge-base">
+                <div v-else class="btn btn-square lg:btn-wide btn-success btn-outline group-hover:btn-base border-1">
                   <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
                       <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-linecap="square"
@@ -345,12 +345,13 @@ function onChangeSettingsButtonClick() {
                         stroke-miterlimit="10" stroke-width="2"></polyline>
                     </g>
                   </svg>
-                  <span class="hidden lg:inline">Посмотрли</span>
+                  <span class="hidden lg:inline">Посмотрели</span>
                   <!-- <span class="lg:hidden">»</span> -->
                 </div>
               </td>
               <td class="text-center delete-cell">
-                <button @click.stop="movieToRemove = m.id; removeMovieModal = true" class="btn btn-error">
+                <button @click.stop="movieToRemove = m.id; removeMovieModal = true"
+                  class="btn btn-outline btn-square btn-error borded-1">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
                     viewBox="0 0 16 16">
                     <path
@@ -383,7 +384,7 @@ function onChangeSettingsButtonClick() {
                           <b class="ml-4"> {{ members.get(r.user_id).username }}</b>
                           <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                         </div>
-                        <div class="chat-bubble chat-bubble-success text-xl">{{ r.comment }}.</div>
+                        <div class="chat-bubble chat-bubble-neutral text-xl">{{ r.comment }}.</div>
                       </div>
                     </div>
                   </div>
