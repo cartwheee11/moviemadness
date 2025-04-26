@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import db from '../../service/db.js'
 import { ResponseBody, Group } from '../../types/shared.js'
-import { FindInviteRequestBody, FindInviteResponseBody } from '../../types/contracts.js'
+import { FindInviteRequestBody, FindInviteResponseData } from '../../types/contracts.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   const { token } = req.body as FindInviteRequestBody
@@ -12,7 +12,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     return res.status(422).json({ message: 'bad token' } as ResponseBody)
   }
 
-  const response: ResponseBody<FindInviteResponseBody> = {
+  const response: ResponseBody<FindInviteResponseData> = {
     message: 'success',
     data: group[0],
   }

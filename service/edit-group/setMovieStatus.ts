@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import type { EditGroupRequestBody, GetGroupResponseBody } from '../../types/contracts.js'
+import type { EditGroupRequestBody, GetGroupResponseData } from '../../types/contracts.js'
 import withAuth from '../../middlewares/withAuth.js'
 import { GroupSettingMovieStatus, ResponseBody } from '../../types/shared.js'
 import { getGroup } from '../groups.js'
@@ -17,7 +17,7 @@ export default async function setMovieStatus(req: VercelRequest, res: VercelResp
 
     const group = await getGroup(params.groupId, body.page)
 
-    const response: ResponseBody<GetGroupResponseBody> = {
+    const response: ResponseBody<GetGroupResponseData> = {
       message: 'success',
       data: group,
     }

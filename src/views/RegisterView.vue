@@ -39,49 +39,51 @@ function onRegisterButtonClick() {
 <template>
 
   <div class="container">
-    <div class="mt-10 mx-auto max-w-100 ">
-
-
-      <div class="login-form flex flex-col gap-4">
+    <div class="mt-7 mx-auto max-w-100 ">
+      <div class="login-form flex flex-col">
         <div class="flex justify-center">
-          <div class="join">
+          <div class="join rounded-full overflow-hidden">
             <RouterLink to="/auth/login"><button class="btn join-item">Войти</button></RouterLink>
-            <button class="btn join-item btn-neutral">Зарегистрироваться</button>
+            <button class="btn join-item btn-primary">Зарегистрироваться</button>
           </div>
         </div>
 
-        <p>
-          <label class="input  w-full" :class="{ 'input-error': !val.login }" type="text">
-            Логин
-            <input v-model="login" class="grow" type="input" @input="() => { val.login = login.length >= 6 }"
+        <div class="fieldset rounded-box p-4 mt-4 mx-auto border-base-200 border-2 w-full lg:w-100">
+          <label for="" class="label mt-4">Логин</label>
+          <label class="input input-lg w-full" :class="{ 'input-error': !val.login }" type="text">
+            <input v-model="login" class="input-lg w-full" type="input" @input="() => { val.login = login.length >= 6 }"
               placeholder="вася123">
             <span v-if="!val.login" class="badge badge-error">больше 6 символов</span>
           </label>
-        </p>
-        <p>
-          <label class="input  w-full" type="text" :class="{ 'input-error': !val.pass }">
-            Пароль
-            <input v-model="pass" class="grow" @input="val.pass = pass.length >= 6; val.repeatPass = repeatPass == pass"
-              type="password" placeholder="qwezxc">
+
+          <label for="" class="label mt-4">Пароль</label>
+          <label class="input input-lg w-full" type="text" :class="{ 'input-error': !val.pass }">
+            <input v-model="pass" class="w-full input-lg"
+              @input="val.pass = pass.length >= 6; val.repeatPass = repeatPass == pass" type="password"
+              placeholder="qwezxc">
             <span v-if="!val.pass" class="badge badge-error">больше 6 символов</span>
           </label>
-        </p>
-        <p>
-          <label class="input  w-full" type="text" :class="{ 'input-error': !val.repeatPass }">
-            Пароль
-            <input class="grow" v-model="repeatPass" @input="() => { val.repeatPass = repeatPass == pass }"
+
+          <label class="label mt-4">Повторите пароль</label>
+          <label class="input-lg input w-full" type="text" :class="{ 'input-error': !val.repeatPass }">
+
+            <input class="input-lg w-full" v-model="repeatPass" @input="() => { val.repeatPass = repeatPass == pass }"
               type="password" placeholder="qwezxc">
             <span v-if="!val.repeatPass" class="badge badge-error">пароли не совпадают</span>
 
           </label>
-        </p>
-        <div class="divider my-0"></div>
-        <p>
-          <button @click="onRegisterButtonClick" :disabled="isRegisterButtonDisabled" class="btn w-full btn-primary">
-            <span v-if="isRegisterButtonLoading" class="loading loading-spinner"></span>
-            <span v-else>зарегистрироваться</span>
-          </button>
-        </p>
+
+          <div class="divider"></div>
+          <p>
+            <button @click="onRegisterButtonClick" :disabled="isRegisterButtonDisabled"
+              class="btn w-full btn-primary btn-lg">
+              <span v-if="isRegisterButtonLoading" class="loading loading-spinner"></span>
+              <span v-else>зарегистрироваться</span>
+            </button>
+          </p>
+        </div>
+
+
       </div>
       <p class="mt-4 text-center text-primary-content">{{ errorMessage }}</p>
     </div>

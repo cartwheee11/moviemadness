@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, onMounted } from 'vue'
-import type { Auth } from '../api'
+import type { Auth } from '../../types/shared'
 export const useAuth = defineStore('auth', () => {
   const auth = ref<Auth>()
 

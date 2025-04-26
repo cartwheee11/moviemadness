@@ -7,7 +7,7 @@ const pass = ref('')
 const errorMessage = ref('')
 const isLoginButtonLoading = ref(false)
 const router = useRouter()
-
+// TODO: сделать нормальный дизайн
 const val = ref({
   login: true,
   pass: true
@@ -25,7 +25,7 @@ function onLoginClick() {
 
   loginResult.then(ans => {
     isLoginButtonLoading.value = false
-    if (ans.message == 'error') {
+    if (ans.message !== 'success') {
       errorMessage.value = ans.message
       val.value.login = false
       val.value.pass = false
@@ -40,12 +40,36 @@ function onLoginClick() {
 
 <template>
 
-  <div class="container">
-    <div class="mt-10 mx-auto max-w-100 ">
+  <div class="container flex items-center flex-col">
+    <div class="join overflow-hidden rounded-full mt-7">
+      <button class="btn join-item btn-primary">Войти</button>
+
+      <RouterLink to="/auth/register"><button class="btn">Зарегистрироваться</button> </RouterLink>
+
+
+    </div>
+    <fieldset class="fieldset rounded-box p-4 mt-4 mx-auto border-base-200 border-2 w-full lg:w-100">
+      <label class="label mt-4">Логин</label>
+      <input type="text" @input="val.pass = true; val.login = true" v-model="login"
+        :class="{ 'input-error': !val.login }" class="input input-lg w-full" placeholder="Логин" />
+
+      <label class="label mt-4">Пароль</label>
+      <input @input="val.login = true; val.pass = true" v-model="pass" type="password"
+        :class="{ 'input-error': !val.pass }" class="input input-lg w-full" placeholder="Пароль" />
+
+      <div class="divider"></div>
+
+      <button :disabled="isLoginButtonDisabled" @click="onLoginClick" class="btn btn-lg w-full btn-primary">
+        <span v-if="isLoginButtonLoading" class="loading loading-spinner"></span>
+        <span v-else>войти</span>
+      </button>
+    </fieldset>
+
+    <!-- <div class="mt-10 mx-auto max-w-100 ">
       <div class="login-form flex flex-col gap-4">
         <div class="flex justify-center">
           <div class="join overflow-hidden">
-            <button class="btn join-item btn-neutral">Войти</button>
+            <button class="btn join-item btn-primary">Войти</button>
             <RouterLink to="/auth/register"><button class="btn join-item">Зарегистрироваться</button></RouterLink>
           </div>
         </div>
@@ -71,7 +95,7 @@ function onLoginClick() {
         </p>
       </div>
       <p class="text-primary mt-4 text-center">{{ errorMessage }}</p>
-    </div>
+    </div> -->
 
   </div>
 

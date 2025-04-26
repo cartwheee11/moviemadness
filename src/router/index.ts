@@ -5,6 +5,7 @@ import RegisterView from '@/views/RegisterView.vue'
 import ProfileView from '@/views/ProfileView.vue'
 import GroupView from '@/views/GroupView.vue'
 import InviteView from '@/views/InviteView.vue'
+import TestView from '@/views/TestView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,11 @@ const router = createRouter({
       path: '/invite/:token',
       name: 'invite',
       component: InviteView,
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: TestView,
     },
   ],
 })

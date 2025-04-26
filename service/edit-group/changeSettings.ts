@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import type { EditGroupRequestBody, GetGroupResponseBody } from '../../types/contracts.js'
+import type { EditGroupRequestBody, GetGroupResponseData } from '../../types/contracts.js'
 import withUserInGroup from '../../middlewares/withUserInGroup.js'
 import { GroupChangingSettings, ResponseBody } from '../../types/shared.js'
 import db from '../db.js'
@@ -24,7 +24,7 @@ export default async function setMovieRating(req: VercelRequest, res: VercelResp
 
     const group = await getGroup(groupId, body.page)
 
-    const response: ResponseBody<GetGroupResponseBody> = {
+    const response: ResponseBody<GetGroupResponseData> = {
       message: 'success',
       data: group,
     }

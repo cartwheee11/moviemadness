@@ -269,6 +269,8 @@ function onChangeSettingsButtonClick() {
 
   </ModalWindow>
 
+
+
   <ModalWindow @hide="removeMovieModal = false" :visible="removeMovieModal">
     <h3 class="font-black text-xl">Удалить фильм?</h3>
     <p class="mt-4">Это действие нельзя отменить</p>
@@ -295,8 +297,13 @@ function onChangeSettingsButtonClick() {
       <input type="text" v-model="changeSettingsInputs.avatarUrl" class="input w-full" placeholder="Ссылка на картинку">
     </fieldset>
 
+
+
     <fieldset class="fieldset w-full text-left mt-2">
       <legend class="fieldset-legend">Ссылка-приглашение</legend>
+
+
+
       <textarea rows="4" v-if="group" type="text" :value="`${origin}/invite/${group.invite_token}`"
         class="textarea w-full" placeholder="Type here"></textarea>
       <div v-else class="skeleton w-full h-10"></div>
@@ -325,8 +332,6 @@ function onChangeSettingsButtonClick() {
     <section v-if="movies.length" class="">
       <h2 class="text-3xl font-black mb-5">Идеи для просмотра</h2>
       <button @click="addMovieModal = true" class="add-table-row-button mb-4">+</button>
-
-      <!-- TODO: Вынести в отдельный компонент @/components/MoviesTable.vue -->
       <div class="table-wrapper">
         <table class="table table-lg" :class="{ 'opacity-50': movieListIsBlocked }">
           <thead>
@@ -350,12 +355,12 @@ function onChangeSettingsButtonClick() {
               <td class="hidden lg:table-cell">{{ m.created_at }}</td>
               <td class="hidden lg:table-cell">{{ members?.get(m.user_id)?.username || 'Аноним' }}</td>
               <td class="!m-0 lg:w-50 align-center text-center !p-1">
-                <AsyncButton v-if="!m.is_watched" @click="() => onWatchClick(m.id)" class="btn bg-base-300">
+                <AsyncButton v-if="!m.is_watched" @click="() => onWatchClick(m.id)" class="btn btn-primary">
                   <span class="hidden lg:inline">Посмотреть</span>
                   <span class="lg:hidden">»</span>
                 </AsyncButton>
 
-                <div v-else class="btn btn-square lg:btn-wide btn-primary group-hover:btn-base">
+                <div v-else class="btn btn-square lg:btn-wide btn-success group-hover:btn-base">
                   <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
                       <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-linecap="square"
@@ -417,6 +422,7 @@ function onChangeSettingsButtonClick() {
                 </div>
                 <AsyncButton @click="() => rateMovie(m)" class="btn btn-lg w-full mt-4 btn-primary">Оценить
                 </AsyncButton>
+                <!-- <div class="divider"></div> -->
                 <AsyncButton @click="() => onUnwatchClick(m.id)" class="mt-4 btn btn-lg w-full btn-secondary">
                   Не просмотрено
                 </AsyncButton>

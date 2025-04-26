@@ -52,7 +52,7 @@ onMounted(() => {
       <h2 class="text-center mt-50">Неверная <br> ссылка</h2>
     </div>
     <div v-else-if="serverResponse.message = 'success'" class="mt-4">
-      <div class="card w-full bg-base-300  mx-auto">
+      <div class="card w-full bg-base-200  mx-auto">
         <div class="card-body">
           <div class="flex justify-between">
             <div class="group-wrapper max-w-200 flex gap-4 flex-col lg:flex-row">
@@ -61,7 +61,7 @@ onMounted(() => {
               </AvatarWithPlaceholder>
 
               <div class="info">
-                <span class="badge badge-neutral">приглашение</span>
+                <span class="badge badge-primary">приглашение</span>
                 <p class="text-5xl font-black">{{ serverResponse.data?.name }}</p>
                 <p class="mt-4 text-xl">{{ serverResponse.data?.desc }}</p>
               </div>
@@ -69,7 +69,7 @@ onMounted(() => {
             </div>
           </div>
           <div class="mt-6">
-            <button @click="onAcceptButtonClick" class="btn btn-block btn-neutral btn-xl">Принять</button>
+            <button @click="onAcceptButtonClick" class="btn btn-block btn-primary btn-xl">Принять</button>
           </div>
         </div>
       </div>

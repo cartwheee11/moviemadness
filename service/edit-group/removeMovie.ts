@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import type { EditGroupRequestBody, GetGroupResponseBody } from '../../types/contracts.js'
+import type { EditGroupRequestBody, GetGroupResponseData } from '../../types/contracts.js'
 import withAuth from '../../middlewares/withAuth.js'
 import { GroupMovieRemoval, ResponseBody } from '../../types/shared.js'
 import { getGroup } from '../../service/groups.js'
@@ -20,7 +20,7 @@ export default async function setMovieRating(req: VercelRequest, res: VercelResp
       return res.status(422).json({ message: 'group is not defined' })
     }
 
-    const response: ResponseBody<GetGroupResponseBody> = {
+    const response: ResponseBody<GetGroupResponseData> = {
       message: 'success',
       data: dbResponse,
     }

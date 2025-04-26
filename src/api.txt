@@ -7,7 +7,6 @@ import type {
   Profile,
   GroupSettingMovieRating,
   GroupMemberAddition,
-  Auth,
 } from '../types/shared'
 
 import type {
@@ -15,17 +14,18 @@ import type {
   EditProfileRequestBody,
   EditProfileResponseData,
   FindInviteRequestBody,
-  FindInviteResponseData,
-  GetGroupRequestBody,
-  GetGroupResponseData,
+  FindInviteResponseBody,
+  GetGroupRequiesBody,
+  GetGroupResponseBody,
   GetRatesRequestBody,
-  GetRatesResponseData,
+  GetRatesResponseBody,
   LoginRequiestBody,
-  LoginResponseData,
 } from '../types/contracts'
 
 const baseURL = ''
 import { useAuth } from './stores/auth'
+
+export type Auth = { username: string; pass: string }
 
 async function fetchWithMiddleware(url: string, opts: RequestInit) {
   const res = fetch(url, opts)
@@ -53,7 +53,6 @@ export async function register(username: string, pass: string) {
     credentials: 'include',
   })
 
-  // TODO: поменять type == success
   const data = (await res.json()) as Record<string, string | Auth>
   if (data.type == 'success') {
     const auth = data.auth as Auth
@@ -70,6 +69,8 @@ export async function logout() {
     credentials: 'include',
   })
 
+  console.log(res)
+
   removeAuth()
   return res
 }
@@ -81,7 +82,6 @@ export async function login(username: string, pass: string) {
   }
 
   const { setAuth } = useAuth()
-
   const res = await fetch(baseURL + '/api/auth/login', {
     method: 'POST',
     body: JSON.stringify(reuqiest),
@@ -91,14 +91,13 @@ export async function login(username: string, pass: string) {
     credentials: 'include',
   })
 
-  const body = (await res.json()) as ResponseBody<LoginResponseData>
-
-  if (body.data) {
-    const auth = body.data.auth
+  const data = (await res.json()) as Record<string, string | Auth>
+  if (data.type == 'success') {
+    const auth = data.auth as Auth
     setAuth(auth)
   }
 
-  return body
+  return data
 }
 
 export async function getProfile() {
@@ -107,8 +106,10 @@ export async function getProfile() {
     method: 'GET',
   })
 
-  const data: ResponseBody<{ groups: Group[]; user: Profile }> = await res?.json()
+  console.log(res)
 
+  const data: ResponseBody<{ groups: Group[]; user: Profile }> = await res?.json()
+  console.log(data)
   return data
 }
 
@@ -128,7 +129,7 @@ export async function createGroup(name: string) {
 }
 
 export async function getGroup(groupId: string, page: number) {
-  const requiesBody: GetGroupRequestBody = {
+  const requiesBody: GetGroupRequiesBody = {
     groupId,
     page,
   }
@@ -142,7 +143,7 @@ export async function getGroup(groupId: string, page: number) {
     credentials: 'include',
   })
 
-  const data = (await res.json()) as ResponseBody<GetGroupResponseData>
+  const data = (await res.json()) as ResponseBody<GetGroupResponseBody>
 
   return data
 }
@@ -162,7 +163,9 @@ export async function editGroup(params: GroupEdition, page: number) {
     credentials: 'include',
   })
 
-  const data = (await res.json()) as ResponseBody<GetGroupResponseData>
+  const data = (await res.json()) as ResponseBody<GetGroupResponseBody>
+
+  console.log(data)
 
   return data
 }
@@ -190,7 +193,7 @@ export async function setMovieRate(
     credentials: 'include',
   })
 
-  const data = (await res.json()) as ResponseBody<GetRatesResponseData>
+  const data = (await res.json()) as ResponseBody<GetRatesResponseBody>
 
   return data
 }
@@ -209,7 +212,7 @@ export async function getRates(movieId: string) {
     credentials: 'include',
   })
 
-  const data = (await res.json()) as ResponseBody<GetRatesResponseData>
+  const data = (await res.json()) as ResponseBody<GetRatesResponseBody>
 
   return data
 }
@@ -219,18 +222,22 @@ export async function findInvite(token: string) {
     token,
   }
 
-  const res = await fetch(baseURL + '/api/groups/findInvite', {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(request),
-    credentials: 'include',
-  })
+  try {
+    const res = await fetch(baseURL + '/api/groups/findInvite', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(request),
+      credentials: 'include',
+    })
 
-  const data = (await res.json()) as ResponseBody<FindInviteResponseData>
+    const data = (await res.json()) as ResponseBody<FindInviteResponseBody>
 
-  return data
+    return data
+  } catch (e) {
+    console.log(e)
+  }
 }
 
 export async function acceptInvite(token: string, groupId: string) {

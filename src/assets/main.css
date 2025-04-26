@@ -1,17 +1,34 @@
 @import 'tailwindcss';
 @plugin 'daisyui' {
-  themes: cupcake --default;
+  themes: pastel --default;
 }
 
 :root {
-  /* --color-base-200: rgb(243, 243, 243); */
-  --color-neutral: black;
+  --color-base-200: #f2f0f7;
 }
 
 @plugin '@tailwindcss/typography';
 
 .container {
   @apply m-auto px-4 max-w-250;
+}
+
+@layer base {
+  * {
+    --input-color: var(--color-base-300) !important; /* default color */
+  }
+
+  *::after {
+    --divider-color: var(--color-base-300) !important;
+  }
+
+  .input-error {
+    --input-color: var(--color-error) !important; /* default color */
+  }
+}
+
+.input {
+  @apply rounded-2xl;
 }
 
 /* section {
@@ -26,27 +43,23 @@ h2 {
   @apply text-3xl font-black;
 }
 
-@theme {
-}
-
 table.wrapper {
   @apply overflow-x-auto rounded-2xl rounded-box border border-base-content bg-base-100;
 }
 
 table.table {
-  @apply bg-base-300;
+  @apply bg-base-200;
 }
-
-table.table tr {
-  @apply shadow-xs;
+tbody:not(:first-child) {
+  @apply !border-t-2 !border-base-300 border-solid;
 }
 
 .add-table-row-button {
-  @apply btn bg-base-300 rounded-2xl border-base-content w-full h-full text-4xl py-5 border-none;
+  @apply btn bg-base-200 rounded-2xl border-base-content w-full h-full text-4xl py-5 border-none;
 }
 
 .skeleton {
-  @apply bg-base-300;
+  @apply bg-base-200;
 }
 
 button {

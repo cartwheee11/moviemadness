@@ -2,9 +2,8 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import db from '../../service/db.js'
 import { ResponseBody, Rate } from '../../types/shared.js'
 import withAuth from '../../middlewares/withAuth.js'
-// import type { GroupMovieStatusSetting } from '../../service/types.js'
-// import { getGroup } from '../../service/groups.js'
-import { GetRatesRequestBody, GetRatesResponseBody } from '../../types/contracts.js'
+
+import { GetRatesRequestBody, GetRatesResponseData } from '../../types/contracts.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   withAuth(req, res, async () => {
@@ -14,7 +13,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
     const dbResponse = (await db`select * from rates where movie_id = ${id}`) as Rate[]
 
-    const response: ResponseBody<GetRatesResponseBody> = {
+    const response: ResponseBody<GetRatesResponseData> = {
       message: 'success',
       data: dbResponse,
     }
