@@ -61,8 +61,8 @@ function onRegisterButtonClick() {
         <p>
           <label class="input  w-full" type="text" :class="{ 'input-error': !val.pass }">
             Пароль
-            <input v-model="pass" class="grow" @input="val.pass = pass.length >= 6" type="password"
-              placeholder="qwezxc">
+            <input v-model="pass" class="grow" @input="val.pass = pass.length >= 6; val.repeatPass = repeatPass == pass"
+              type="password" placeholder="qwezxc">
             <span v-if="!val.pass" class="badge badge-error">больше 6 символов</span>
           </label>
         </p>

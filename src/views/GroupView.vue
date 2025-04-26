@@ -11,7 +11,7 @@ import AvatarWithPlaceholder from '@/components/AvatarWithPlaceholder.vue';
 const route = useRoute()
 const group = ref<Group>()
 const movies = ref<Array<Movie & { clicked?: boolean, rates?: Rate[], stars?: number, comment?: string }>>([])
-const members = ref()
+const members = ref<Map<string, User>>()
 const addMovieModal = ref(false)
 const currentPage = ref<number>(1)
 const moveisIsClear = ref<boolean>(false)
@@ -269,6 +269,8 @@ function onChangeSettingsButtonClick() {
 
   </ModalWindow>
 
+
+
   <ModalWindow @hide="removeMovieModal = false" :visible="removeMovieModal">
     <h3 class="font-black text-xl">Удалить фильм?</h3>
     <p class="mt-4">Это действие нельзя отменить</p>
@@ -351,7 +353,7 @@ function onChangeSettingsButtonClick() {
               <th class="py-6 w-max">{{ m.name }}</th>
               <td class="max-w-50 hidden lg:table-cell" :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
               <td class="hidden lg:table-cell">{{ m.created_at }}</td>
-              <td class="hidden lg:table-cell">{{ members?.get(m.user_id).username }}</td>
+              <td class="hidden lg:table-cell">{{ members?.get(m.user_id)?.username || 'Аноним' }}</td>
               <td class="!m-0 lg:w-50 align-center text-center !p-1">
                 <AsyncButton v-if="!m.is_watched" @click="() => onWatchClick(m.id)" class="btn btn-warning">
                   <span class="hidden lg:inline">Посмотреть</span>
@@ -397,16 +399,16 @@ function onChangeSettingsButtonClick() {
                 <div class="pb-4" v-else>
                   <div class="m-2 mb-4" v-for="r in m.rates" :key="r.id">
                     <div class="message flex items-end">
-                      <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="members.get(m.user_id).avatar">
-                        <span>{{ members.get(m.user_id).username[0].toUpperCase() }}</span>
+                      <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="members?.get(r.user_id)?.avatar || null">
+                        <span>{{ members?.get(r.user_id)?.username[0].toUpperCase() || 'А' }}</span>
                       </AvatarWithPlaceholder>
 
                       <div class="chat chat-start">
                         <div class="chat-header">
-                          <b class="ml-4"> {{ members.get(r.user_id).username }}</b>
+                          <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
                           <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                         </div>
-                        <div class="chat-bubble chat-bubble-neutral text-xl">{{ r.comment }}.</div>
+                        <div class="chat-bubble chat-bubble-neutral text-xl">{{ r.comment }}</div>
                       </div>
                     </div>
                   </div>

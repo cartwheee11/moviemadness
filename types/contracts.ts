@@ -8,3 +8,5 @@ export type GetRatesResponseBody = Rate[]
 export type LoginRequiestBody = { username: string; pass: string }
 export type FindInviteRequestBody = { token: string }
 export type FindInviteResponseBody = Group
+export type EditProfileRequestBody = { name: string; avatar: string }
+export type EditProfileResponseData = User

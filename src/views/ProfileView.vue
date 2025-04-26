@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { createGroup, getProfile } from '@/api'
-import { onMounted, ref } from 'vue'
+import { createGroup, editProfile, getProfile } from '@/api'
+import { onMounted, ref, watch } from 'vue'
 import ModalWindow from '@/components/ModalWindow.vue'
 import type { Profile } from '../../types/shared'
 import router from '@/router'
@@ -12,6 +12,38 @@ const isError = ref(false)
 const createGroupModal = ref(false)
 const groupName = ref('')
 const profile = ref<Profile>()
+const editProfileModal = ref<boolean>(false)
+const editProfileInputs = ref({
+  username: '',
+  avatar: ''
+})
+
+watch(profile, () => {
+  editProfileInputs.value = {
+    username: profile.value?.username || '',
+    avatar: profile.value?.avatar || ''
+
+  }
+})
+
+function updateProfile(user: Profile) {
+  profile.value = user
+}
+
+function onEditProfileButtonClick() {
+  return new Promise<void>((resolve) => {
+    editProfile({ name: editProfileInputs.value.username, avatar: editProfileInputs.value.avatar }).then(res => {
+      if (res.data) {
+        const { username, avatar, created_at, id } = res.data
+        updateProfile({ username, avatar, id, created_at })
+
+      }
+      resolve()
+      editProfileModal.value = false
+    })
+  })
+
+}
 
 function onCreateGroupButtonClick(): Promise<void> {
   return new Promise<void>((resolve => {
@@ -54,6 +86,23 @@ onMounted(() => {
     </p>
   </ModalWindow>
 
+  <ModalWindow @hide="editProfileModal = false" :visible="editProfileModal">
+    <h3 class="font-black text-xl">Настройки профиля</h3>
+
+    <fieldset class="fieldset w-full text-left mt-2">
+      <legend class="fieldset-legend">Никнейм</legend>
+      <input type="text" v-model="editProfileInputs.username" class="input w-full">
+    </fieldset>
+
+    <fieldset class="fieldset w-full text-left mt-2">
+      <legend class="fieldset-legend">Ссылка на аватарку</legend>
+      <input type="text" v-model="editProfileInputs.avatar" class="input w-full" placeholder="Описание">
+    </fieldset>
+
+    <AsyncButton class="mt-4 btn w-full" @click="() => onEditProfileButtonClick()">Отправить</AsyncButton>
+  </ModalWindow>
+
+
   <section class="profile">
     <div class="container flex gap-4 lg:gap-10 items-center py-10">
       <AvatarWithPlaceholder :url="profile?.avatar" class="w-20 h-20 lg:w-40 lg:h-40 text-7xl">
@@ -65,8 +114,10 @@ onMounted(() => {
       </div>
       <div v-else class="about">
         <h1 class="mb-3 font-black">{{ profile.username }}</h1>
-        <p><b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
+        <p>
+          <b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
         </p>
+        <button @click="editProfileModal = true" class="btn mt-4">Редактировать</button>
       </div>
 
 

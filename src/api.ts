@@ -12,6 +12,8 @@ import type {
 
 import type {
   EditGroupRequestBody,
+  EditProfileRequestBody,
+  EditProfileResponseData,
   FindInviteRequestBody,
   FindInviteResponseBody,
   GetGroupRequiesBody,
@@ -256,6 +258,23 @@ export async function acceptInvite(token: string, groupId: string) {
   })
 
   const data = (await res.json()) as ResponseBody
+
+  return data
+}
+
+export async function editProfile(params: { name: string; avatar: string }) {
+  const request: EditProfileRequestBody = params
+
+  const res = await fetchWithMiddleware(baseURL + '/api/profile/edit', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(request),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody<EditProfileResponseData>
 
   return data
 }
