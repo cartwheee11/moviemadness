@@ -33,11 +33,9 @@ async function fetchWithMiddleware(url: string, opts: RequestInit) {
   res.then(({ status }) => {
     if (status == 401) {
       const auth = useAuth()
-
       router.push('/auth/login')
       auth.removeAuth()
     }
-    //TODO: if OK setAuth(user)
   })
 
   return res

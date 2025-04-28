@@ -1,23 +1,25 @@
 import { defineStore } from 'pinia'
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import type { Auth } from '../../types/shared'
+
+// FIXME добавить работу с api (login, register, logout) сюда
 export const useAuth = defineStore('auth', () => {
   const auth = ref<Auth>()
 
-  onMounted(() => {
-    const cached = localStorage.getItem('auth')
-    if (cached) {
-      const parsed = JSON.parse(cached) as unknown
+  // TODO убрать спагетти
 
-      if (parsed && typeof parsed == 'object') {
-        if ('username' in parsed) {
-          if (typeof parsed.username == 'string') {
-            auth.value = parsed as Auth
-          }
+  const cached = localStorage.getItem('auth')
+  if (cached) {
+    const parsed = JSON.parse(cached) as unknown
+
+    if (parsed && typeof parsed == 'object') {
+      if ('username' in parsed) {
+        if (typeof parsed.username == 'string') {
+          auth.value = parsed as Auth
         }
       }
     }
-  })
+  }
 
   function setAuth(a: Auth) {
     console.log('получили auth: ' + a)

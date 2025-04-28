@@ -6,6 +6,7 @@ import type { Profile } from '../../types/shared'
 import router from '@/router'
 import AvatarWithPlaceholder from '../components/AvatarWithPlaceholder.vue'
 import AsyncButton from '@/components/AsyncButton.vue'
+import { useAuth } from '@/stores/auth'
 
 const groups = ref()
 const isError = ref(false)
@@ -63,12 +64,14 @@ function onCreateGroupButtonClick(): Promise<void> {
 
 onMounted(() => {
   getProfile().then(data => {
-
     if (data.message == 'success') {
       groups.value = data.data?.groups
       profile.value = data.data?.user
 
-      console.log(data)
+
+      //TODO пофиксить
+      const auth = useAuth()
+      auth.setAuth({ username: data.data?.user.username as string })
     } else {
       isError.value = true
     }
@@ -145,7 +148,7 @@ onMounted(() => {
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell truncate max-w-50">{{ g.desc }}</td>
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell ">{{ new Date(g.created_at as
               string).toLocaleString('ru-RU').split(',')[0]
-            }}
+              }}
             </td>
           </tr>
         </tbody>
