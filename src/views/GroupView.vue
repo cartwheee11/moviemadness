@@ -7,6 +7,7 @@ import ModalWindow from '@/components/ModalWindow.vue'
 import { PAGE_LIMIT } from '../../constants/shared'
 import AsyncButton from '@/components/AsyncButton.vue'
 import AvatarWithPlaceholder from '@/components/AvatarWithPlaceholder.vue';
+import MoviesPage from '@/components/MoviesPage.vue';
 
 const route = useRoute()
 const group = ref<Group>()
@@ -47,26 +48,24 @@ function loadRates(m: Movie & { rates?: Rate[] }) {
   }
 }
 
-function rateMovie(m: Movie & { clicked?: boolean, rates?: Rate[], stars?: number, comment?: string }) {
-  return new Promise<void>((resolve, reject) => {
-    console.log(m.comment, m.stars)
-    if (group.value && m.comment && m.stars) {
-      setMovieRate(m.id, m.comment, m.stars + '', group.value.id).then(res => {
-        console.log(res)
-        console.log(res.data)
-        if (res.data) {
-          updateRates(res.data, m.id)
-          m.comment = ''
-          resolve()
-        } else {
-          reject()
-        }
-      })
-    } else {
-      reject()
-    }
-  })
-
+function rateMovie(movieId: string, comment: string, stars: number, resolver: () => void) {
+  if (group.value && comment) {
+    setMovieRate(movieId, comment, stars + '', group.value.id).then(res => {
+      if (res.data) {
+        updateRates(res.data, movieId)
+        movies.value.forEach(m => {
+          if (m.id == movieId) {
+            m.comment = ''
+          }
+        })
+        resolver()
+      } else {
+        resolver()
+      }
+    })
+  } else {
+    resolver()
+  }
 }
 
 watch(movies, () => {
@@ -133,50 +132,55 @@ function onAddMovieClick() {
 
 }
 
-function onWatchClick(id: string) {
-  return new Promise<unknown>((resolve, reject) => {
-    if (group.value) {
-      const request: GroupSettingMovieStatus = {
-        groupId: group.value.id,
-        aim: 'settingMovieStatus',
-        movieId: id,
-        watched: true
-      }
-
-      editGroup(request, currentPage.value).then(res => {
-        if (res.data) {
-          updateGroup(res.data)
-          resolve(true)
-        }
-      })
-    } else {
-      reject(true)
+function onWatchClick(id: string, resolver: () => void) {
+  if (group.value) {
+    const request: GroupSettingMovieStatus = {
+      groupId: group.value.id,
+      aim: 'settingMovieStatus',
+      movieId: id,
+      watched: true
     }
-  })
 
+    editGroup(request, currentPage.value).then(res => {
+      if (res.data) {
+        updateGroup(res.data)
+        resolver()
+      }
+    })
+  } else {
+    resolver()
+  }
 }
 
-function onUnwatchClick(id: string) {
-  return new Promise<unknown>((resolve, reject) => {
-    if (group.value) {
-      const request: GroupSettingMovieStatus = {
-        groupId: group.value.id,
-        aim: 'settingMovieStatus',
-        movieId: id,
-        watched: false
-      }
+function onUnwatchClick(id: string, resolver: () => void) {
+  if (group.value) {
+    const request: GroupSettingMovieStatus = {
+      groupId: group.value.id,
+      aim: 'settingMovieStatus',
+      movieId: id,
+      watched: false
+    }
 
-      editGroup(request, currentPage.value).then(res => {
-        if (res.data) {
-          updateGroup(res.data)
-          resolve(true)
-        }
-      })
-    } else {
-      reject(true)
+    editGroup(request, currentPage.value).then(res => {
+      if (res.data) {
+        updateGroup(res.data)
+        resolver()
+      }
+    })
+  } else {
+    // resolver()
+  }
+}
+
+function onMovieOpen(movieId: string) {
+  movies.value.forEach(m => {
+    if (m.id === movieId) {
+      m.clicked = !m.clicked
+      loadRates(m)
     }
   })
 }
+
 
 function loadGroup() {
   movieListIsBlocked.value = true;
@@ -204,7 +208,7 @@ onMounted(() => {
 })
 
 function onRemoveMovieButtonClick() {
-  return new Promise<void>((resolve) => {
+  return new Promise<void>(resolve => {
     if (!group.value) {
       return resolve()
     }
@@ -225,6 +229,8 @@ function onRemoveMovieButtonClick() {
       resolve()
     })
   })
+
+
 }
 
 function onChangeSettingsButtonClick() {
@@ -251,8 +257,6 @@ function onChangeSettingsButtonClick() {
 }
 
 </script>
-
-
 
 <template>
   <ModalWindow @hide="addMovieModal = false" :visible="addMovieModal">
@@ -327,106 +331,13 @@ function onChangeSettingsButtonClick() {
       <button @click="addMovieModal = true" class="add-table-row-button mb-4">+</button>
 
       <!-- TODO: Вынести в отдельный компонент @/components/MoviesTable.vue -->
-      <div class="table-wrapper">
-        <table class="table table-lg" :class="{ 'opacity-50': movieListIsBlocked }">
-          <thead>
-            <tr>
-              <th class="hidden lg:table-cell"></th>
-              <th class="lg:w-1/6 w-full">Название</th>
-              <th class="w-1/6 hidden lg:table-cell">Комментарий</th>
-              <th class="w-1/6 hidden lg:table-cell">Дата</th>
-              <th class="w-1/6 hidden lg:table-cell">Добавил</th>
-              <th class="lg:w-1/6 align-center text-center w-0 !p-0">Статус</th>
-              <th class="lg:w-1/6 align-center text-center w-0 !p-0">Удалить</th>
-            </tr>
-          </thead>
-
-          <tbody v-for="(m, i) in movies" :key="m.id">
-            <tr class="hover:bg-base-content/2 cursor-pointer group"
-              @click.prevent="m.clicked = !m.clicked; loadRates(m)">
-              <td class="hidden lg:table-cell">{{ (currentPage - 1) * PAGE_LIMIT + i + 1 }}</td>
-              <th class="py-6 w-max">{{ m.name }}</th>
-              <td class="max-w-50 hidden lg:table-cell" :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
-              <td class="hidden lg:table-cell">{{ m.created_at }}</td>
-              <td class="hidden lg:table-cell">{{ members?.get(m.user_id)?.username || 'Аноним' }}</td>
-              <td class="!m-0 lg:w-50 align-center text-center !p-1">
-                <AsyncButton v-if="!m.is_watched" @click="() => onWatchClick(m.id)" class="btn bg-base-300">
-                  <span class="hidden lg:inline">Посмотреть</span>
-                  <span class="lg:hidden">»</span>
-                </AsyncButton>
-
-                <div v-else class="btn btn-square lg:btn-wide btn-primary group-hover:btn-base">
-                  <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
-                      <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-linecap="square"
-                        stroke-miterlimit="10" stroke-width="2"></circle>
-                      <polyline points="7 13 10 16 17 8" fill="none" stroke="currentColor" stroke-linecap="square"
-                        stroke-miterlimit="10" stroke-width="2"></polyline>
-                    </g>
-                  </svg>
-                  <span class="hidden lg:inline">Посмотрели</span>
-                  <!-- <span class="lg:hidden">»</span> -->
-                </div>
-              </td>
-              <td class="text-center delete-cell">
-                <button @click.stop="movieToRemove = m.id; removeMovieModal = true"
-                  class="btn btn-square btn-secondary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
-                    viewBox="0 0 16 16">
-                    <path
-                      d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                    <path
-                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            <tr v-if="m.clicked && m.is_watched" class="">
-              <td colspan="7" class="py-4 w-full">
-                <div v-if="!m.rates" class="">
-                  <div class="skeleton w-full h-20 mb-4"></div>
-                </div>
-
-                <div v-else-if="m.rates.length == 0" class="p-10 pb-12 text-center">
-                  <span class="font-bold">Напиши первый отзыв</span>
-                </div>
-
-                <div class="pb-4" v-else>
-                  <div class="m-2 mb-4" v-for="r in m.rates" :key="r.id">
-                    <div class="message flex items-end">
-                      <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="members?.get(r.user_id)?.avatar || null">
-                        <span>{{ members?.get(r.user_id)?.username[0].toUpperCase() || 'А' }}</span>
-                      </AvatarWithPlaceholder>
-
-                      <div class="chat chat-start">
-                        <div class="chat-header">
-                          <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
-                          <time class="text-xs opacity-50">{{ r.rate }}/10</time>
-                        </div>
-                        <div class="chat-bubble text-xl">{{ r.comment }}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex w-full gap-4 items-center flex-col lg:flex-row">
-                  <input type="text" class="input input-lg grow" v-model="m.comment" placeholder="комментарий">
-                  <div class="rating rating-lg">
-                    <input @click="m.stars = i" v-for="i in 10" :key="i" type="radio" name="rating-10"
-                      class="mask mask-star-2" aria-label="1 star" />
-                  </div>
-                </div>
-                <AsyncButton @click="() => rateMovie(m)" class="btn btn-lg w-full mt-4 btn-primary">Оценить
-                </AsyncButton>
-                <AsyncButton @click="() => onUnwatchClick(m.id)" class="mt-4 btn btn-lg w-full btn-secondary">
-                  Не просмотрено
-                </AsyncButton>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-
-      </div>
+      <!-- убрать бесконечную загрузку при отправке комментария без оценки -->
+      <MoviesPage :class="{ 'opacity-50': movieListIsBlocked }" :movies="movies" :currentPage="currentPage"
+        :members="members" @watch="onWatchClick" @open="(onMovieOpen)" @unwatch="onUnwatchClick" @rate="rateMovie"
+        @removeMovie="(movieId) => {
+          movieToRemove = movieId
+          removeMovieModal = true
+        }" />
 
       <div class="pag flex justify-center">
         <div class="join mt-4 mx-auto">

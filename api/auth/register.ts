@@ -3,6 +3,7 @@ import db from '../../service/db.js'
 import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
 
+// TODO: добавить контракты
 export default async function (req: VercelRequest, res: VercelResponse) {
   const body = req.body as unknown
 

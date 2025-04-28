@@ -142,9 +142,10 @@ onMounted(() => {
               <AvatarWithPlaceholder class="w-10 h-10" :url="g?.avatar_url">{{ g.name[0] }}</AvatarWithPlaceholder>
               <span class="truncate max-w-45">{{ g.name }}</span>
             </th>
-            <td class="hidden lg:table-cell truncate max-w-50">{{ g.desc }}</td>
-            <td class="hidden lg:table-cell ">{{ new Date(g.created_at as string).toLocaleString('ru-RU').split(',')[0]
-              }}
+            <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell truncate max-w-50">{{ g.desc }}</td>
+            <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell ">{{ new Date(g.created_at as
+              string).toLocaleString('ru-RU').split(',')[0]
+            }}
             </td>
           </tr>
         </tbody>

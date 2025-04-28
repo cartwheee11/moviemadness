@@ -5,9 +5,6 @@ import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
 import { LoginRequiestBody, LoginResponseData } from '../../types/contracts.js'
 
-// TODO: убрать валидацию на уровне контрактов
-// TODO: убрать спагетти код
-
 export default async function (req: VercelRequest, res: VercelResponse) {
   const body = req.body as LoginRequiestBody
 

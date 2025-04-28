@@ -7,7 +7,6 @@ const pass = ref('')
 const errorMessage = ref('')
 const isLoginButtonLoading = ref(false)
 const router = useRouter()
-// TODO: сделать нормальный дизайн
 const val = ref({
   login: true,
   pass: true
@@ -45,7 +44,6 @@ function onLoginClick() {
       <button class="btn join-item btn-primary">Войти</button>
 
       <RouterLink to="/auth/register"><button class="btn">Зарегистрироваться</button> </RouterLink>
-
 
     </div>
     <fieldset class="fieldset rounded-box p-4 mt-4 mx-auto border-base-200 border-2 w-full lg:w-100">

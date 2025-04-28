@@ -12,6 +12,7 @@ function onNativeClick() {
   isLoading.value = true
   const res = onClick()
   res.then(() => {
+    console.log('срабатывает then')
     isLoading.value = false
   })
 

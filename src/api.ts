@@ -37,6 +37,7 @@ async function fetchWithMiddleware(url: string, opts: RequestInit) {
       router.push('/auth/login')
       auth.removeAuth()
     }
+    //TODO: if OK setAuth(user)
   })
 
   return res
@@ -270,3 +271,8 @@ export async function editProfile(params: { name: string; avatar: string }) {
 
   return data
 }
+
+// TODO: удаление коментария
+// TODO: удаление группы (только если создатель группы)
+// TODO: смена пароля
+// TODO: убрать взаимодействия со сторой как сайд эфект (фетчинг данных должен происходить через стору)

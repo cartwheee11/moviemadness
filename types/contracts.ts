@@ -12,4 +12,4 @@ export type FindInviteResponseData = Group
 export type EditProfileRequestBody = { name: string; avatar: string }
 export type EditProfileResponseData = User
 
-// TODO: создать контракты для loginresponse registerresponse и logoutresponse
+// TODO: создать контракты для registerresponse
