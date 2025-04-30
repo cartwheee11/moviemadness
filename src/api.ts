@@ -52,7 +52,7 @@ export async function register(username: string, pass: string) {
     credentials: 'include',
   })
 
-  // TODO: поменять type == success
+  // TODO: поменять type == success на соответствующее контракту поле (внедрить контракт)
   const data = (await res.json()) as Record<string, string | Auth>
   if (data.type == 'success') {
     const auth = data.auth as Auth

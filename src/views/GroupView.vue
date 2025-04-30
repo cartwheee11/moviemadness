@@ -229,8 +229,6 @@ function onRemoveMovieButtonClick() {
       resolve()
     })
   })
-
-
 }
 
 function onChangeSettingsButtonClick() {
@@ -311,7 +309,7 @@ function onChangeSettingsButtonClick() {
   </ModalWindow>
   <div class="container">
     <section
-      class="header-section lg:items-start lg:flex-row flex-col items-center flex gap-4 lg:gap-10 py-10 lg:py-20 ">
+      class="header-section lg:items-start lg:flex-row flex-col items-center flex gap-4 lg:gap-10 py-10 lg:py-10 ">
       <AvatarWithPlaceholder class="w-20 lg:w-50 lg:h-50 h-20 text-7xl" :url="group?.avatar_url">
         <span class="text-7xl">{{ group?.name[0].toUpperCase() }}</span>
       </AvatarWithPlaceholder>
@@ -329,8 +327,6 @@ function onChangeSettingsButtonClick() {
     <section v-if="movies.length" class="">
       <h2 class="text-3xl font-black mb-5">Идеи для просмотра</h2>
       <button @click="addMovieModal = true" class="add-table-row-button mb-4">+</button>
-
-      <!-- TODO: Вынести в отдельный компонент @/components/MoviesTable.vue -->
       <!-- убрать бесконечную загрузку при отправке комментария без оценки -->
       <MoviesPage :class="{ 'opacity-50': movieListIsBlocked }" :movies="movies" :currentPage="currentPage"
         :members="members" @watch="onWatchClick" @open="(onMovieOpen)" @unwatch="onUnwatchClick" @rate="rateMovie"
@@ -351,7 +347,7 @@ function onChangeSettingsButtonClick() {
     </section>
 
     <div v-else-if="!moveisIsClear" class="section flex justify-center items-center h-100">
-      <span class="loading loading-spinner loading-xl"></span>
+      <div class="skeleton w-full h-100"></div>
     </div>
 
     <div v-else class="flex flex-col gap-4 justify-center items-center h-100">
