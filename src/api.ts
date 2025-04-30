@@ -20,7 +20,7 @@ import type {
   GetGroupResponseData,
   GetRatesRequestBody,
   GetRatesResponseData,
-  LoginRequiestBody,
+  LoginRequestBody,
   LoginResponseData,
 } from '../types/contracts'
 
@@ -74,7 +74,7 @@ export async function logout() {
 }
 
 export async function login(username: string, pass: string) {
-  const reuqiest: LoginRequiestBody = {
+  const reuqiest: LoginRequestBody = {
     username,
     pass,
   }

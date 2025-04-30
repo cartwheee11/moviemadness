@@ -3,10 +3,10 @@ import db from '../../service/db.js'
 import type { ResponseBody, User } from '../../types/shared.js'
 import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
-import { LoginRequiestBody, LoginResponseData } from '../../types/contracts.js'
+import { LoginRequestBody, LoginResponseData } from '../../types/contracts.js'
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  const body = req.body as LoginRequiestBody
+  const body = req.body as LoginRequestBody
 
   const { username, pass } = body
   const [user] = (await db`select * from users where username = ${username}`) as User[]

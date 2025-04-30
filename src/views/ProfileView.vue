@@ -23,7 +23,6 @@ watch(profile, () => {
   editProfileInputs.value = {
     username: profile.value?.username || '',
     avatar: profile.value?.avatar || ''
-
   }
 })
 
@@ -43,7 +42,6 @@ function onEditProfileButtonClick() {
       editProfileModal.value = false
     })
   })
-
 }
 
 function onCreateGroupButtonClick(): Promise<void> {
@@ -78,7 +76,6 @@ onMounted(() => {
 
   })
 })
-
 </script>
 
 <template>
