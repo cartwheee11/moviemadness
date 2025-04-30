@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
 import { LoginRequestBody, LoginResponseData } from '../../types/contracts.js'
 
+//TODO: валидация zod
 export default async function (req: VercelRequest, res: VercelResponse) {
   const body = req.body as LoginRequestBody
 

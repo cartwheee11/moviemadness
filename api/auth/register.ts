@@ -4,6 +4,9 @@ import bcrypt from 'bcrypt'
 import { createSession } from '../../service/auth.js'
 
 // TODO: добавить контракты
+//TODO: валидация zod
+//TODO: длина никнейма не больше 16 символов
+//todo: длина пароля не более 72 символов
 export default async function (req: VercelRequest, res: VercelResponse) {
   const body = req.body as unknown
 

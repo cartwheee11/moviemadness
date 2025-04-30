@@ -5,6 +5,8 @@ import db from '../../service/db.js'
 import { ResponseBody, User } from '../../types/shared.js'
 import withAuth from '../../middlewares/withAuth.js'
 
+//TODO валидация zod
+//TODO: длина пароля и тд
 export default async function (req: VercelRequest, res: VercelResponse) {
   withAuth(req, res, async ({ user_id }) => {
     const { name, avatar } = req.body as EditProfileRequestBody
