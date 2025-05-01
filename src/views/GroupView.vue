@@ -352,7 +352,7 @@ function onChangeSettingsButtonClick() {
 
     <div v-else class="flex flex-col gap-4 justify-center items-center h-100">
       <h2>У вас пока не добавлено ни одного фильма</h2>
-      <button @click="addMovieModal = true" class="btn btn-info">Добавить</button>
+      <button @click="addMovieModal = true" class="btn btn-primary">Добавить</button>
     </div>
 
   </div>
