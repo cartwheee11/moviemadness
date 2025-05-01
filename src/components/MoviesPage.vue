@@ -142,7 +142,8 @@ const movieListIsBlocked = ref<boolean>(false)
             <AsyncButton @click="() => onRateClick(m.id, m.comment || '', m.stars || 0,)"
               class="btn btn-lg w-full mt-4 btn-primary">Оценить
             </AsyncButton>
-            <AsyncButton @click="() => onUnwatchClick(m.id)" class="mt-4 btn btn-lg w-full btn-secondary">
+            <AsyncButton @click="() => onUnwatchClick(m.id)"
+              class="mt-4 btn btn-lg w-full bg-base-300 !border-none hover:opacity-80">
               Не просмотрено
             </AsyncButton>
           </td>
