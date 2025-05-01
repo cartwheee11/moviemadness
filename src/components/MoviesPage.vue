@@ -106,8 +106,9 @@ const movieListIsBlocked = ref<boolean>(false)
         </tr>
         <tr v-if="m.clicked && m.is_watched" class="">
           <td colspan="7" class="py-4 w-full">
-            <div v-if="!m.rates" class="">
-              <div class="skeleton w-full h-20 mb-4"></div>
+            <div v-if="!m.rates" class="flex py-10 w-full items-center justify-center">
+              <!-- <div class="skeleton w-full h-20 mb-4"></div> -->
+              <div class="loading loading-spinner"></div>
             </div>
 
             <div v-else-if="m.rates.length == 0" class="p-10 pb-12 text-center">
