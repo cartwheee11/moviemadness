@@ -69,7 +69,7 @@ onMounted(() => {
             </div>
           </div>
           <div class="mt-6">
-            <button @click="onAcceptButtonClick" class="btn btn-block btn-primary btn-xl">Принять</button>
+            <button @click="onAcceptButtonClick" class="btn btn-block btn-primary btn-lg">Принять</button>
           </div>
         </div>
       </div>
