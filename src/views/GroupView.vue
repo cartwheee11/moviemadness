@@ -15,7 +15,7 @@ const movies = ref<Array<Movie & { clicked?: boolean, rates?: Rate[], stars?: nu
 const members = ref<Map<string, User>>()
 const addMovieModal = ref(false)
 const currentPage = ref<number>(1)
-const moveisIsClear = ref<boolean>(false)
+const moviesIsClear = ref<boolean>(false)
 const movieListIsBlocked = ref<boolean>(false)
 const changeSettingsInputs = ref({
   name: '',
@@ -190,7 +190,7 @@ function loadGroup() {
     }
 
     if (res.data.movies.length === 0) {
-      moveisIsClear.value = true
+      moviesIsClear.value = true
     }
 
     movieListIsBlocked.value = false
@@ -346,7 +346,7 @@ function onChangeSettingsButtonClick() {
       </div>
     </section>
 
-    <div v-else-if="!moveisIsClear" class="section flex justify-center items-center h-100">
+    <div v-else-if="!moviesIsClear" class="section flex justify-center items-center h-100">
       <div class="skeleton w-full h-100"></div>
     </div>
 

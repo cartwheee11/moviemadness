@@ -145,7 +145,7 @@ onMounted(() => {
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell truncate max-w-50">{{ g.desc }}</td>
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell ">{{ new Date(g.created_at as
               string).toLocaleString('ru-RU').split(',')[0]
-              }}
+            }}
             </td>
           </tr>
         </tbody>

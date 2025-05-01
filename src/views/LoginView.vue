@@ -62,39 +62,6 @@ function onLoginClick() {
         <span v-else>войти</span>
       </button>
     </fieldset>
-
-    <!-- <div class="mt-10 mx-auto max-w-100 ">
-      <div class="login-form flex flex-col gap-4">
-        <div class="flex justify-center">
-          <div class="join overflow-hidden">
-            <button class="btn join-item btn-primary">Войти</button>
-            <RouterLink to="/auth/register"><button class="btn join-item">Зарегистрироваться</button></RouterLink>
-          </div>
-        </div>
-
-        <p>
-          <label class="input w-full" type="text" :class="{ 'input-error': !val.login }">
-            Логин
-            <input class="grow" @input="val.login = true" v-model="login" type="input" placeholder="вася123">
-          </label>
-        </p>
-        <p>
-          <label class="input  w-full" type="text" :class="{ 'input-error': !val.pass }">
-            Пароль
-            <input class="grow" @input="val.pass = true" v-model="pass" type="password" placeholder="qwezxc">
-          </label>
-        </p>
-        <div class="divider my-0"></div>
-        <p>
-          <button :disabled="isLoginButtonDisabled" @click="onLoginClick" class="btn  w-full btn-primary">
-            <span v-if="isLoginButtonLoading" class="loading loading-spinner"></span>
-            <span v-else>войти</span>
-          </button>
-        </p>
-      </div>
-      <p class="text-primary mt-4 text-center">{{ errorMessage }}</p>
-    </div> -->
-
   </div>
 
 </template>
