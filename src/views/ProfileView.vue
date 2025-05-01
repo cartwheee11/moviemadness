@@ -105,11 +105,11 @@ onMounted(() => {
 
   <section class="profile">
     <div class="container flex gap-4 lg:gap-10 items-center py-10">
-      <AvatarWithPlaceholder :url="profile?.avatar" class="w-20 h-20 lg:w-40 lg:h-40 text-7xl">
+      <AvatarWithPlaceholder :url="profile?.avatar" class="w-20 h-20 shrink-0 lg:w-40 lg:h-40 text-7xl">
         <span class="lg:text-7xl">{{ profile?.username[0].toUpperCase() }}</span>
       </AvatarWithPlaceholder>
-      <div class="" v-if="!profile">
-        <div class="skeleton w-70 h-15"></div>
+      <div class="grow" v-if="!profile">
+        <div class="skeleton w-full h-15"></div>
         <div class="skeleton w-50 h-7 mt-4"></div>
       </div>
       <div v-else class="about">

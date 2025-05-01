@@ -68,6 +68,7 @@ onMounted(() => {
 
             </div>
           </div>
+          <!-- TODO: при нажатии на кнопку при условии что пользователь уже состоит в группе он ловит ошибку 500 internal server error -->
           <div class="mt-4">
             <button @click="onAcceptButtonClick" class="btn btn-block btn-primary btn-lg">Принять</button>
           </div>
