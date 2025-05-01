@@ -53,10 +53,10 @@ onMounted(() => {
     </div>
     <div v-else-if="serverResponse.message = 'success'" class="mt-4">
       <div class="card w-full bg-base-200  mx-auto">
-        <div class="card-body">
+        <div class="card-body p-4">
           <div class="flex justify-between">
             <div class="group-wrapper max-w-200 flex gap-4 flex-col lg:flex-row">
-              <AvatarWithPlaceholder class="w-50 h-50" :url="serverResponse.data?.avatar_url">
+              <AvatarWithPlaceholder class="w-full lg:w-2/3" :url="serverResponse.data?.avatar_url">
                 <span class="text-7xl">{{ serverResponse.data?.name[0].toUpperCase() }}</span>
               </AvatarWithPlaceholder>
 
@@ -68,7 +68,7 @@ onMounted(() => {
 
             </div>
           </div>
-          <div class="mt-6">
+          <div class="mt-4">
             <button @click="onAcceptButtonClick" class="btn btn-block btn-primary btn-lg">Принять</button>
           </div>
         </div>
