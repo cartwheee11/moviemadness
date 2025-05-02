@@ -60,7 +60,7 @@ const movieListIsBlocked = ref<boolean>(false)
       </thead>
 
       <tbody v-for="(m, i) in movies" :key="m.id">
-        <tr class="hover:bg-base-content/2 cursor-pointer group" @click.prevent="$emit('open', m.id)">
+        <tr class="hover:bg-base-content/2 cursor-pointer group" @click.prevent.stop="$emit('open', m.id)">
           <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">
             {{ (currentPage - 1) * PAGE_LIMIT
               + i + 1 }}
@@ -68,17 +68,19 @@ const movieListIsBlocked = ref<boolean>(false)
           <th class="py-6 w-max">{{ m.name }}</th>
           <td class="max-w-50 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell"
             :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">{{ m.created_at }}</td>
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">{{
-            members?.get(m.user_id)?.username || 'Аноним' }}</td>
+          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-30 -z-30">{{ m.created_at }}</td>
+          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-30 -z-30">
+            {{ members?.get(m.user_id)?.username || 'Аноним' }}
+          </td>
           <td class="!m-0 lg:w-50 align-center text-center !p-1">
 
-            <AsyncButton @click="() => onWatchClick(m.id)" v-if="!m.is_watched" class="btn bg-base-300">
+            <AsyncButton @click="() => onWatchClick(m.id)" v-if="!m.is_watched"
+              class="btn bg-base-300 btn-square lg:btn-block">
               <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:inline">Посмотреть</span>
               <span class="lg:hidden">»</span>
             </AsyncButton>
 
-            <div v-else class="btn btn-square lg:btn-wide btn-primary group-hover:btn-base">
+            <button v-else class="btn btn-square lg:btn-wide btn-primary group-hover:btn-base">
               <!-- // TODO: вынести в компонент / заменить на font awesome -->
               <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
@@ -89,10 +91,10 @@ const movieListIsBlocked = ref<boolean>(false)
                 </g>
               </svg>
               <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:inline">Посмотрели</span>
-            </div>
+            </button>
           </td>
-          <td class="text-center delete-cell">
-            <button @click="$emit('removeMovie', m.id)" class="btn btn-square btn-secondary">
+          <td class="delete-cell text-center">
+            <button @click="$emit('removeMovie', m.id); console.log('hello')" class="btn btn-secondary btn-circle">
               <!-- // TODO: вынести в компонент / заменить на font awesome -->
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
                 viewBox="0 0 16 16">

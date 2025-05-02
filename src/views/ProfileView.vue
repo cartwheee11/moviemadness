@@ -135,7 +135,7 @@ onMounted(() => {
         <tbody class="">
           <tr v-for="(g, i) in groups" :key="g.id" class="hover:bg-base-content/5 cursor-pointer group"
             @click="router.push('/groups/' + g.id)">
-            <td class="">
+            <td class="w-1">
               {{ i + 1 }}
             </td>
             <th class="flex gap-5 items-center ">

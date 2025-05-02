@@ -85,6 +85,9 @@ function updateGroup(params: { group?: Group, movies?: Movie[], members?: User[]
   }
 
   if (params.movies) {
+    if (params.movies.length === 0) {
+      moviesIsClear.value = true
+    }
     params.movies.forEach(m => {
       m.created_at = new Date(m.created_at).toLocaleString('ru-RU').split(',')[0]
     })
@@ -350,8 +353,8 @@ function onChangeSettingsButtonClick() {
       <div class="skeleton w-full h-100"></div>
     </div>
 
-    <div v-else class="flex flex-col gap-4 justify-center items-center h-100">
-      <h2>У вас пока не добавлено ни одного фильма</h2>
+    <div v-else class="alert alert-primary flex justify-between">
+      <span class="text-lg">У вас пока не добавлено ни одного фильма</span>
       <button @click="addMovieModal = true" class="btn btn-primary">Добавить</button>
     </div>
 
