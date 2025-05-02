@@ -68,8 +68,8 @@ const movieListIsBlocked = ref<boolean>(false)
           <th class="py-6 w-max">{{ m.name }}</th>
           <td class="max-w-50 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell"
             :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-30 -z-30">{{ m.created_at }}</td>
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-30 -z-30">
+          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30">{{ m.created_at }}</td>
+          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30">
             {{ members?.get(m.user_id)?.username || 'Аноним' }}
           </td>
           <td class="!m-0 lg:w-50 align-center text-center !p-1">
