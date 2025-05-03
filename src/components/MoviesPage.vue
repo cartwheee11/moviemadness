@@ -39,13 +39,13 @@ function onRateClick(movieId: string, comment: string, stars: number) {
   })
 }
 
-
 const movieListIsBlocked = ref<boolean>(false)
 
 </script>
 
 <template>
   <div class="table-wrapper">
+    <!-- переделать на флексбоксы -->
     <table class="table table-lg" :class="{ 'opacity-50': movieListIsBlocked }">
       <thead>
         <tr>

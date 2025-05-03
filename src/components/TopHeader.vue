@@ -11,12 +11,15 @@ const authStore = useAuth()
 const router = useRouter()
 const profile = ref<Profile>()
 
-getProfile().then(res => {
-  if (res.data) {
-    profile.value = res.data?.user
-  }
 
-})
+if (useAuth().auth) {
+  getProfile().then(res => {
+    if (res.data) {
+      profile.value = res.data?.user
+    }
+  })
+}
+
 
 function onLogoutClick() {
   logout().then(() => {
