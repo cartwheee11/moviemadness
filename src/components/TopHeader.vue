@@ -2,9 +2,21 @@
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 import { logout } from '@/api';
+import AvatarWithPlaceholder from './AvatarWithPlaceholder.vue';
+import type { Profile } from '../../types/shared';
+import { getProfile } from '@/api';
+import { ref } from 'vue';
 
 const authStore = useAuth()
 const router = useRouter()
+const profile = ref<Profile>()
+
+getProfile().then(res => {
+  if (res.data) {
+    profile.value = res.data?.user
+  }
+
+})
 
 function onLogoutClick() {
   logout().then(() => {
@@ -21,7 +33,9 @@ function onLogoutClick() {
       <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn">войти</button></RouterLink>
 
       <div v-else>
-        {{ authStore.auth?.username }}
+        <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="profile?.avatar || null">
+          <span>{{ profile?.username[0].toUpperCase() || 'А' }}</span>
+        </AvatarWithPlaceholder>
         <button @click="onLogoutClick" class="btn ml-4">выйти</button>
       </div>
     </div>

@@ -113,7 +113,7 @@ onMounted(() => {
         <div class="skeleton w-50 h-7 mt-4"></div>
       </div>
       <div v-else class="about">
-        <h1 class="mb-3 font-black">{{ profile.username }}</h1>
+        <h1 class="mb-3 font-black truncate max-w-50 md:max-w-full">{{ profile.username }}</h1>
         <p>
           <b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
         </p>
