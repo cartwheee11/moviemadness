@@ -33,9 +33,12 @@ function onLogoutClick() {
       <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn">войти</button></RouterLink>
 
       <div v-else>
-        <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="profile?.avatar || null">
-          <span>{{ profile?.username[0].toUpperCase() || 'А' }}</span>
-        </AvatarWithPlaceholder>
+        <RouterLink to="/profile">
+          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="profile?.avatar || null">
+            <span>{{ profile?.username[0].toUpperCase() || 'А' }}</span>
+          </AvatarWithPlaceholder>
+        </RouterLink>
+
         <button @click="onLogoutClick" class="btn ml-4">выйти</button>
       </div>
     </div>
