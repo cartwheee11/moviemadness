@@ -1,6 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { EditGroupRequestBody } from '../../types/contracts.js'
 
+//TODO: поменять на динамический роутинг как в случае с auth и profile
+//TODO: поменять типы редактирования а ля addMovie на контракты эндпоинтов
 import setMovieStatus from '../../service/edit-group/setMovieStatus.js'
 import setMovieRating from '../../service/edit-group/setMovieRating.js'
 import addMovie from '../../service/edit-group/addMovie.js'
