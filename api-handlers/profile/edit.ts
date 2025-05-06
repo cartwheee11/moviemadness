@@ -8,7 +8,7 @@ import withAuth from '../../middlewares/withAuth.js'
 //TODO валидация zod
 //TODO: длина пароля и тд
 //TODO: валидировать аватар по запросу, является ли возвращаемое значение картинкой
-export default async function (req: VercelRequest, res: VercelResponse) {
+export default async function edit(req: VercelRequest, res: VercelResponse) {
   withAuth(req, res, async ({ user_id }) => {
     const { name, avatar } = req.body as EditProfileRequestBody
 
