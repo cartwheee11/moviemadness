@@ -3,21 +3,21 @@ import { RouterLink, useRouter } from 'vue-router';
 import { useAuth } from '@/stores/auth';
 import { logout } from '@/api';
 import AvatarWithPlaceholder from './AvatarWithPlaceholder.vue';
-import type { Profile } from '../../types/shared';
-import { getProfile } from '@/api';
-import { ref } from 'vue';
 
 const authStore = useAuth()
 const router = useRouter()
-const profile = ref<Profile>()
+// const profile = ref<Profile>()
 
+const auth = useAuth()
+// const profile = auth.profile
 
 if (useAuth().auth) {
-  getProfile().then(res => {
-    if (res.data) {
-      profile.value = res.data?.user
-    }
-  })
+
+  // getProfile().then(res => {
+  //   if (res.data) {
+  //     profile.value = res.data?.user
+  //   }
+  // })
 }
 
 
@@ -37,8 +37,8 @@ function onLogoutClick() {
 
       <div v-else>
         <RouterLink to="/profile">
-          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="profile?.avatar || null">
-            <span>{{ profile?.username[0].toUpperCase() || 'А' }}</span>
+          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar || null">
+            <span>{{ auth.profile?.user.username[0].toUpperCase() || 'А' }}</span>
           </AvatarWithPlaceholder>
         </RouterLink>
 

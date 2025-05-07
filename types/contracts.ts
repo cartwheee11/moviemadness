@@ -11,5 +11,6 @@ export type FindInviteRequestBody = { token: string }
 export type FindInviteResponseData = Group
 export type EditProfileRequestBody = { name: string; avatar: string }
 export type EditProfileResponseData = User
+export type RemoveRateRequestBody = { rate_id: string }
 
 // TODO: создать контракты для registerresponse registerrequest

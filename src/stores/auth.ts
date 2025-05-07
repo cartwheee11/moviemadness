@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { Auth } from '../../types/shared'
+import { ref, watch } from 'vue'
+import type { Auth, Group, Profile } from '../../types/shared'
+import { getProfile } from '@/api'
+import { useRoute } from 'vue-router'
 
 // FIXME добавить работу с api (login, register, logout) сюда
 export const useAuth = defineStore('auth', () => {
@@ -21,6 +23,27 @@ export const useAuth = defineStore('auth', () => {
     }
   }
 
+  const route = useRoute()
+  const profile = ref<{ groups: Group[]; user: Profile }>()
+
+  function updateProfile() {
+    getProfile().then((res) => {
+      if (!res.data) {
+        return
+      }
+
+      const data = res.data
+      profile.value = data
+    })
+  }
+
+  console.log(route)
+
+  watch(route, () => {
+    console.log('update profile')
+    updateProfile()
+  })
+
   function setAuth(a: Auth) {
     console.log('получили auth: ' + a)
     auth.value = a
@@ -34,5 +57,5 @@ export const useAuth = defineStore('auth', () => {
     localStorage.removeItem('auth')
   }
 
-  return { auth, setAuth, removeAuth }
+  return { auth, setAuth, removeAuth, profile }
 })

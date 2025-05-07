@@ -4,6 +4,7 @@ import type { Movie, Rate, User } from '../../types/shared';
 import { PAGE_LIMIT } from '../../constants/shared';
 import AsyncButton from './AsyncButton.vue';
 import AvatarWithPlaceholder from './AvatarWithPlaceholder.vue';
+import { useAuth } from '@/stores/auth';
 
 type CMovie = Movie & { clicked?: boolean, rates?: Rate[], stars?: number, comment?: string }
 
@@ -18,7 +19,8 @@ const emit = defineEmits<{
   rate: [movieId: string, comment: string, stars: number, resolver: () => void],
   open: [movieId: string],
   removeMovie: [movieId: string],
-  unwatch: [movieId: string, resolver: () => void]
+  unwatch: [movieId: string, resolver: () => void],
+  removeRate: [rateId: string, movieId: string]
 }>()
 
 function onUnwatchClick(movieId: string) {
@@ -40,6 +42,8 @@ function onRateClick(movieId: string, comment: string, stars: number) {
 }
 
 const movieListIsBlocked = ref<boolean>(false)
+
+const auth = useAuth()
 
 </script>
 
@@ -132,7 +136,9 @@ const movieListIsBlocked = ref<boolean>(false)
                     </div>
                     <div class="chat-bubble text-xl flex chat-bubble-accent">
                       <span>{{ r.comment }}
-                        <!-- <span class="badge badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span> -->
+
+                        <span @click="$emit('removeRate', r.id, m.id)" v-if="r.user_id == auth.profile?.user.id"
+                          class="badge badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
                       </span>
 
                     </div>

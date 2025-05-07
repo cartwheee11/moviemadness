@@ -22,6 +22,7 @@ import type {
   GetRatesResponseData,
   LoginRequestBody,
   LoginResponseData,
+  RemoveRateRequestBody,
 } from '../types/contracts'
 
 const baseURL = ''
@@ -266,6 +267,26 @@ export async function editProfile(params: { name: string; avatar: string }) {
   })
 
   const data = (await res.json()) as ResponseBody<EditProfileResponseData>
+
+  return data
+}
+
+export async function removeRate(rateId: string) {
+  console.log(rateId)
+  const request: RemoveRateRequestBody = {
+    rate_id: rateId,
+  }
+
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/removeRate', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(request),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody
 
   return data
 }

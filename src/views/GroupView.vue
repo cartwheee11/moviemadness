@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { getGroup, editGroup, setMovieRate, getRates } from '@/api';
+import { getGroup, editGroup, setMovieRate, getRates, removeRate } from '@/api';
 import type { Group, GroupMovieAddition, Movie, User, GroupSettingMovieStatus, Rate, GroupMovieRemoval, GroupChangingSettings } from '../../types/shared';
 import ModalWindow from '@/components/ModalWindow.vue'
 import { PAGE_LIMIT } from '../../constants/shared'
@@ -234,6 +234,22 @@ function onRemoveMovieButtonClick() {
   })
 }
 
+function onRemoveRateClick(rateId: string, movieId: string) {
+  removeRate(rateId).then(res => {
+    if (res.message != 'success') {
+      alert('ошибка')
+      return
+    }
+
+    const [movie] = movies.value.filter(m => m.id == movieId)
+    if (movie) {
+      if (movie.rates) {
+        movie.rates = movie.rates.filter(r => r.id != rateId)
+      }
+    }
+  })
+}
+
 function onChangeSettingsButtonClick() {
   return new Promise<void>(resolve => {
     if (!group.value) {
@@ -342,7 +358,7 @@ function onChangeSettingsButtonClick() {
         @removeMovie="(movieId) => {
           movieToRemove = movieId
           removeMovieModal = true
-        }" />
+        }" @removeRate="onRemoveRateClick" />
 
       <div class="pag flex justify-center">
         <div class="join mt-4 mx-auto">
