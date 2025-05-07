@@ -312,10 +312,15 @@ function onChangeSettingsButtonClick() {
   </ModalWindow>
   <div class="container">
     <section
-      class="header-section lg:items-start lg:flex-row flex-col items-center flex gap-4 lg:gap-10 py-10 lg:py-10 ">
-      <AvatarWithPlaceholder class="w-20 lg:w-50 lg:h-50 h-20 text-7xl" :url="group?.avatar_url">
-        <span class="text-7xl">{{ group?.name[0].toUpperCase() }}</span>
-      </AvatarWithPlaceholder>
+      class="header-section lg:items-start lg:flex-row flex-col items-center flex gap-4 lg:gap-10 py-10 lg:py-20 ">
+      <div class="flex flex-col items-center">
+        <AvatarWithPlaceholder class="w-20 lg:w-50 lg:h-50 h-20 text-7xl" :url="group?.avatar_url">
+          <span class="text-7xl">{{ group?.name[0].toUpperCase() }}</span>
+        </AvatarWithPlaceholder>
+        <button @click="changeSettingsModal = true"
+          class="btn btn-info mt-4 w-full hide lg:show lg:visible">Настроить</button>
+      </div>
+
       <div class="desk lg:text-left text-center flex flex-col items-center lg:items-start">
         <h1 class=" max-w-4/5" v-if="group?.name">{{ group?.name }}</h1>
         <div class="flex flex-col items-center lg:items-start" v-else>
@@ -323,7 +328,8 @@ function onChangeSettingsButtonClick() {
           <div class="skeleton h-10 w-50 mt-4"></div>
         </div>
         <p class="mt-4">{{ group?.desc }}</p>
-        <p><button @click="changeSettingsModal = true" class="btn mt-4">Настроить</button></p>
+        <p><button @click="changeSettingsModal = true" class="btn btn-info mt-4 lg:absolute lg:hide">Настроить</button>
+        </p>
       </div>
     </section>
 

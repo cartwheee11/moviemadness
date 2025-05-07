@@ -43,10 +43,11 @@ function onLoginClick() {
     <div class="join overflow-hidden rounded-full mt-7">
       <button class="btn join-item btn-primary">Войти</button>
 
-      <RouterLink to="/auth/register"><button class="btn">Зарегистрироваться</button> </RouterLink>
+      <RouterLink to="/auth/register"><button class="btn bg-base-100 border-none">Зарегистрироваться</button>
+      </RouterLink>
 
     </div>
-    <fieldset class="fieldset rounded-box p-4 mt-4 mx-auto border-base-200 border-2 w-full lg:w-100">
+    <fieldset class="fieldset rounded-box p-4 bg-base-100 mt-4 mx-auto w-full lg:w-100">
       <label class="label mt-4">Логин</label>
       <input type="text" @input="val.pass = true; val.login = true" v-model="login"
         :class="{ 'input-error': !val.login }" class="input input-lg w-full" placeholder="Логин" />

@@ -43,12 +43,13 @@ function onRegisterButtonClick() {
       <div class="login-form flex flex-col">
         <div class="flex justify-center">
           <div class="join rounded-full overflow-hidden">
-            <RouterLink to="/auth/login"><button class="btn join-item">Войти</button></RouterLink>
+            <RouterLink to="/auth/login"><button class="btn join-item border-none bg-base-100">Войти</button>
+            </RouterLink>
             <button class="btn join-item btn-primary">Зарегистрироваться</button>
           </div>
         </div>
 
-        <div class="fieldset rounded-box p-4 mt-4 mx-auto border-base-200 border-2 w-full lg:w-100">
+        <div class="fieldset rounded-box p-4 mt-4 mx-auto bg-base-100 w-full lg:w-100">
           <label for="" class="label mt-4">Логин</label>
           <label class="input input-lg w-full" :class="{ 'input-error': !val.login }" type="text">
             <input v-model="login" class="input-lg w-full" type="input" @input="() => { val.login = login.length >= 6 }"

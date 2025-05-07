@@ -104,7 +104,7 @@ onMounted(() => {
 
 
   <section class="profile">
-    <div class="container flex gap-4 lg:gap-10 items-center py-10">
+    <div class="container flex gap-4 lg:gap-10 items-center py-20">
 
       <AvatarWithPlaceholder :url="profile?.avatar" class="w-20 h-20 shrink-0 lg:w-40 lg:h-40 text-7xl">
         <span class="lg:text-7xl">{{ profile?.username[0].toUpperCase() }}</span>
@@ -136,7 +136,7 @@ onMounted(() => {
     <div class="mt-4 table-wrapper">
       <table class="table table-lg">
         <tbody class="">
-          <tr v-for="(g, i) in groups" :key="g.id" class="hover:bg-base-content/5 cursor-pointer group"
+          <tr v-for="(g, i) in groups" :key="g.id" class="hover:bg-base-content/2 cursor-pointer group"
             @click="router.push('/groups/' + g.id)">
             <td class="w-1">
               {{ i + 1 }}
@@ -148,7 +148,7 @@ onMounted(() => {
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell truncate max-w-50">{{ g.desc }}</td>
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell ">{{ new Date(g.created_at as
               string).toLocaleString('ru-RU').split(',')[0]
-            }}
+              }}
             </td>
           </tr>
         </tbody>

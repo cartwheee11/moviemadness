@@ -75,12 +75,12 @@ const movieListIsBlocked = ref<boolean>(false)
           <td class="!m-0 lg:w-50 align-center text-center !p-1">
 
             <AsyncButton @click="() => onWatchClick(m.id)" v-if="!m.is_watched"
-              class="btn bg-base-300 btn-square lg:btn-block">
+              class="btn border-2 border-base-300 bg-base-100 btn-square lg:btn-block">
               <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:inline">Посмотреть</span>
               <span class="lg:hidden">»</span>
             </AsyncButton>
 
-            <button v-else class="btn btn-square lg:btn-wide btn-primary group-hover:btn-base">
+            <button v-else class="btn btn-square lg:btn-wide btn-primary btn-md group-hover:btn-base">
               <!-- // TODO: вынести в компонент / заменить на font awesome -->
               <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
@@ -94,7 +94,8 @@ const movieListIsBlocked = ref<boolean>(false)
             </button>
           </td>
           <td class="delete-cell text-center">
-            <button @click="$emit('removeMovie', m.id); console.log('hello')" class="btn btn-secondary btn-circle">
+            <button @click="$emit('removeMovie', m.id); console.log('hello')"
+              class="btn border-2 border-base-300 bg-base-100 btn-md btn-circle">
               <!-- // TODO: вынести в компонент / заменить на font awesome -->
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
                 viewBox="0 0 16 16">
@@ -129,7 +130,12 @@ const movieListIsBlocked = ref<boolean>(false)
                       <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
                       <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                     </div>
-                    <div class="chat-bubble text-xl">{{ r.comment }}</div>
+                    <div class="chat-bubble text-xl flex chat-bubble-accent">
+                      <span>{{ r.comment }}
+                        <!-- <span class="badge badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span> -->
+                      </span>
+
+                    </div>
                   </div>
                 </div>
               </div>

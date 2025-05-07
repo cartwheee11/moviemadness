@@ -4,7 +4,15 @@
 }
 
 :root {
-  --color-base-200: #f2f0f7;
+  --color-base-200: #eff6f0;
+  --color-base-300: #dae5dc;
+  --color-neutral: black;
+  --color-primary: #9ceb05;
+  --color-primary-content: black;
+  --color-accent: #9beb05cb;
+  --color-accent-content: #213102;
+  --color-info: white;
+  --color-info-content: black;
 }
 
 @plugin '@tailwindcss/typography';
@@ -25,6 +33,14 @@
   .input-error {
     --input-color: var(--color-error) !important; /* default color */
   }
+}
+
+@utility hide {
+  @apply absolute opacity-0 -z-999 -top-99999 -left-999;
+}
+
+@utility show {
+  @apply relative opacity-100 z-10 top-0 left-0;
 }
 
 .input {
@@ -48,19 +64,29 @@ table.wrapper {
 }
 
 table.table {
-  @apply bg-base-200;
+  @apply bg-base-100;
 }
 tbody:not(:first-child) {
-  @apply !border-t-2 !border-base-300 border-solid;
+  @apply !border-t-2 !border-base-100 border-solid;
 }
 
 .add-table-row-button {
-  @apply btn bg-base-200 rounded-2xl border-base-content w-full h-full text-4xl py-5 border-none;
+  @apply btn bg-base-100 rounded-2xl border-base-content w-full h-full text-4xl py-5 border-none;
 }
 
 .skeleton {
-  @apply bg-base-200;
+  @apply bg-base-100;
+  background-image: linear-gradient(
+    105deg,
+    #d3171700 0% 40%,
+    var(--color-base-200) 50%,
+    #0000 60% 100%
+  );
 }
+
+/* .hide {
+  @apply absolute opacity-0 -z-999 -top-99999 -left-999;
+} */
 
 button {
   @apply shadow-none;
