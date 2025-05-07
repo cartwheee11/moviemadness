@@ -120,7 +120,7 @@ onMounted(() => {
         <p>
           <b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
         </p>
-        <button @click="editProfileModal = true" class="btn mt-4">Редактировать</button>
+        <button @click="editProfileModal = true" class="btn mt-4 btn-info">Редактировать</button>
       </div>
 
 
@@ -148,7 +148,7 @@ onMounted(() => {
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell truncate max-w-50">{{ g.desc }}</td>
             <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell ">{{ new Date(g.created_at as
               string).toLocaleString('ru-RU').split(',')[0]
-              }}
+            }}
             </td>
           </tr>
         </tbody>
