@@ -7,6 +7,7 @@ import router from '@/router'
 import AvatarWithPlaceholder from '../components/AvatarWithPlaceholder.vue'
 import AsyncButton from '@/components/AsyncButton.vue'
 import { useAuth } from '@/stores/auth'
+import ListItem from '@/components/ListItem.vue'
 
 const groups = ref()
 const isError = ref(false)
@@ -133,7 +134,26 @@ onMounted(() => {
     <button @click="createGroupModal = true" class="add-table-row-button mt-4">+</button>
 
     <div v-if="!profile?.id" class="skeleton w-full h-100 mt-4"></div>
-    <div class="mt-4 table-wrapper">
+    <ListItem class="mt-4">
+      <div v-for="(g, i) in groups" :key="g.id" class="cursor-pointer group flex items-center text-xl gap-4"
+        @click="router.push('/groups/' + g.id)">
+        <div class="shrink">
+          {{ i + 1 }}
+        </div>
+        <strong class="flex gap-5 items-center lg:max-w-1/2">
+          <AvatarWithPlaceholder class="w-10 h-10" :url="g?.avatar_url">{{ g.name[0] }}</AvatarWithPlaceholder>
+          <span class="truncate max-w-45">{{ g.name }}</span>
+        </strong>
+        <div class="hide lg:show text-gray-400">—</div>
+        <div class="absolute hide lg:show text-gray-400 truncate grow-1">{{ g.desc }}
+        </div>
+        <div class="absolute opacity-0 lg:relative lg:opacity-100 ">{{ new Date(g.created_at as
+          string).toLocaleString('ru-RU').split(',')[0]
+        }}
+        </div>
+      </div>
+    </ListItem>
+    <!-- <div class="mt-4 table-wrapper">
       <table class="table table-lg">
         <tbody class="">
           <tr v-for="(g, i) in groups" :key="g.id" class="hover:bg-base-content/2 cursor-pointer group"
@@ -153,6 +173,6 @@ onMounted(() => {
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
   </section>
 </template>

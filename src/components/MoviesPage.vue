@@ -49,7 +49,7 @@ const auth = useAuth()
 
 <template>
   <div class="table-wrapper">
-    <!-- переделать на флексбоксы -->
+    <!-- переделать на флексбоксы/gird -->
     <table class="table table-lg" :class="{ 'opacity-50': movieListIsBlocked }">
       <thead>
         <tr>
