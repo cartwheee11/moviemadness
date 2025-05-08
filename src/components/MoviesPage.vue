@@ -69,7 +69,7 @@ const auth = useAuth()
             {{ (currentPage - 1) * PAGE_LIMIT
               + i + 1 }}
           </td>
-          <th class="py-6 w-max">{{ m.name }}</th>
+          <th class="py-6 w-max mont">{{ m.name }}</th>
           <td class="max-w-50 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell"
             :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
           <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30">{{ m.created_at }}</td>
@@ -134,7 +134,7 @@ const auth = useAuth()
                       <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
                       <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                     </div>
-                    <div class="chat-bubble text-xl flex chat-bubble-accent">
+                    <div class="chat-bubble text-xl flex chat-bubble-accent mont font-semibold">
                       <span>{{ r.comment }}
 
                         <span @click="$emit('removeRate', r.id, m.id)" v-if="r.user_id == auth.profile?.user.id"
