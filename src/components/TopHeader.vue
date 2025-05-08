@@ -35,14 +35,14 @@ function onLogoutClick() {
       <RouterLink to="/profile"><b>moviemadness</b></RouterLink>
       <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn">войти</button></RouterLink>
 
-      <div v-else>
+      <div v-else class="flex gap-4">
         <RouterLink to="/profile">
-          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar || null">
-            <span>{{ auth.profile?.user.username[0].toUpperCase() || 'А' }}</span>
+          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar || undefined">
+            <span class="rounded-full">{{ auth.profile?.user.username[0].toUpperCase() || 'А' }}</span>
           </AvatarWithPlaceholder>
         </RouterLink>
 
-        <button @click="onLogoutClick" class="btn ml-4">выйти</button>
+        <button @click="onLogoutClick" class="btn btn-primary">выйти</button>
       </div>
     </div>
   </nav>

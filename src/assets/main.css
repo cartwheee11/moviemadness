@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 @import 'tailwindcss';
+
 @plugin 'daisyui' {
   themes: pastel --default;
 }
@@ -53,10 +56,12 @@
 
 h1 {
   @apply text-3xl lg:text-7xl font-black;
+  font-family: 'Montserrat';
 }
 
 h2 {
   @apply text-3xl font-black;
+  font-family: 'Montserrat';
 }
 
 table.wrapper {
@@ -90,4 +95,5 @@ tbody:not(:first-child) {
 
 button {
   @apply shadow-none;
+  font-family: 'Montserrat';
 }
