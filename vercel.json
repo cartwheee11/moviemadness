@@ -1,4 +1,4 @@
 {
-  "devCommand": "yarn dev --host",
+  "devCommand": "yarn dev --port $PORT",
   "rewrites": [{ "source": "/((?!api).*)", "destination": "" }]
 }

@@ -21,8 +21,6 @@ export default async function withAuth(
     return dif / 1000 / 60 / 60 / 24
   }
 
-  console.log(getDays(dif))
-
   if (getDays(dif) > 30) {
     await db`delete from sessions where token = ${session.token}`
     res.setHeader('Set-Cookie', [

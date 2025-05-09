@@ -23,6 +23,7 @@ const changeSettingsInputs = ref({
   avatarUrl: '' as string | null
 })
 
+
 const removeMovieModal = ref<boolean>(false)
 const movieToRemove = ref<string>('')
 const changeSettingsModal = ref<boolean>(false)

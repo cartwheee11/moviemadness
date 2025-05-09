@@ -39,11 +39,11 @@
 }
 
 @utility hide {
-  @apply absolute opacity-0 -z-999 -top-99999 -left-999;
+  @apply absolute opacity-0 -top-99999 -left-999;
 }
 
 @utility show {
-  @apply relative opacity-100 z-10 top-0 left-0;
+  @apply relative opacity-100 top-0 left-0;
 }
 
 @utility mont {

@@ -3,11 +3,13 @@ import { createGroup, editProfile, getProfile } from '@/api'
 import { onMounted, ref, watch } from 'vue'
 import ModalWindow from '@/components/ModalWindow.vue'
 import type { Profile } from '../../types/shared'
-import router from '@/router'
+// import router from '@/router'
 import AvatarWithPlaceholder from '../components/AvatarWithPlaceholder.vue'
 import AsyncButton from '@/components/AsyncButton.vue'
-import { useAuth } from '@/stores/auth'
 import ListItem from '@/components/ListItem.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const groups = ref()
 const isError = ref(false)
@@ -64,16 +66,10 @@ function onCreateGroupButtonClick(): Promise<void> {
 }
 
 onMounted(() => {
-
   getProfile().then(data => {
     if (data.message == 'success') {
       groups.value = data.data?.groups
       profile.value = data.data?.user
-
-
-      //TODO пофиксить
-      const auth = useAuth()
-      auth.setAuth({ username: data.data?.user.username as string })
     } else {
       isError.value = true
     }
@@ -152,30 +148,9 @@ onMounted(() => {
         </div>
         <div class="absolute opacity-0 lg:relative lg:opacity-100 ">{{ new Date(g.created_at as
           string).toLocaleString('ru-RU').split(',')[0]
-        }}
+          }}
         </div>
       </div>
     </ListItem>
-    <!-- <div class="mt-4 table-wrapper">
-      <table class="table table-lg">
-        <tbody class="">
-          <tr v-for="(g, i) in groups" :key="g.id" class="hover:bg-base-content/2 cursor-pointer group"
-            @click="router.push('/groups/' + g.id)">
-            <td class="w-1">
-              {{ i + 1 }}
-            </td>
-            <th class="flex gap-5 items-center ">
-              <AvatarWithPlaceholder class="w-10 h-10" :url="g?.avatar_url">{{ g.name[0] }}</AvatarWithPlaceholder>
-              <span class="truncate max-w-45">{{ g.name }}</span>
-            </th>
-            <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell truncate max-w-50">{{ g.desc }}</td>
-            <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell ">{{ new Date(g.created_at as
-              string).toLocaleString('ru-RU').split(',')[0]
-            }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div> -->
   </section>
 </template>

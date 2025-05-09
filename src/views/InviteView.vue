@@ -52,7 +52,7 @@ onMounted(() => {
       <h2 class="text-center mt-50">Неверная <br> ссылка</h2>
     </div>
     <div v-else-if="serverResponse.message = 'success'" class="mt-4">
-      <div class="card w-full bg-base-200  mx-auto">
+      <div class="card w-full bg-base-100  mx-auto">
         <div class="card-body p-4">
           <div class="flex justify-between">
             <div class="group-wrapper max-w-200 flex gap-4 flex-col lg:flex-row">
