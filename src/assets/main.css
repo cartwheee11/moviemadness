@@ -76,7 +76,7 @@ table.table {
   @apply bg-base-100;
 }
 tbody:not(:first-child) {
-  @apply !border-t-2 !border-base-100 border-solid;
+  @apply !border-t-2 !border-gray-100 border-solid;
 }
 
 .add-table-row-button {

@@ -27,6 +27,8 @@ watch(profile, () => {
   }
 })
 
+
+
 function updateProfile(user: Profile) {
   profile.value = user
 }
@@ -62,6 +64,7 @@ function onCreateGroupButtonClick(): Promise<void> {
 }
 
 onMounted(() => {
+
   getProfile().then(data => {
     if (data.message == 'success') {
       groups.value = data.data?.groups
