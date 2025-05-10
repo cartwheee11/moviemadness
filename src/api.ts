@@ -28,7 +28,6 @@ import type {
 
 const baseURL = ''
 import { useAuth } from './stores/auth'
-import { useRouter } from 'vue-router'
 
 async function fetchWithMiddleware(url: string, opts: RequestInit) {
   const res = fetch(url, opts)

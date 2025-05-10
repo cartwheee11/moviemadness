@@ -38,8 +38,12 @@ function onLogoutClick() {
 
       <div v-else class="flex gap-4">
         <RouterLink to="/profile">
-          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar || undefined">
-            <span class="rounded-full">{{ auth.profile?.user.username[0].toUpperCase() || 'А' }}</span>
+          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar">
+            <span v-if="auth.profile" class="rounded-full">{{ auth.profile?.user.username[0].toUpperCase() || 'А'
+              }}</span>
+            <span v-else class="rounded-full">
+              <div class="loading loading-spinner"></div>
+            </span>
           </AvatarWithPlaceholder>
         </RouterLink>
 

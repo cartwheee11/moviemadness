@@ -258,7 +258,7 @@ defineExpose<{ loadPage: () => void }>({
         <div class="lg:w-2/6">
           <div class="mont font-bold">{{ m.name }}</div>
           <div class="max-w-50 text-gray-400 font-semibold" :class="{ 'truncate': !m.clicked }">{{ m.desc
-            }}</div>
+          }}</div>
         </div>
 
 
@@ -272,9 +272,9 @@ defineExpose<{ loadPage: () => void }>({
                 {{ members?.get(m.user_id)?.username || 'Аноним' }}
               </span>
 
-              <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30 text-sm">{{
+              <span class="text-sm">{{
                 m.created_at
-              }}</span>
+                }}</span>
 
             </div>
           </div>
@@ -317,17 +317,17 @@ defineExpose<{ loadPage: () => void }>({
                   <span>{{ members?.get(r.user_id)?.username[0].toUpperCase() || 'А' }}</span>
                 </AvatarWithPlaceholder>
 
-                <div class="chat chat-start">
+                <div class="chat chat-start max-w-full lg:max-w-4/5 shrink-0 grow">
                   <div class="chat-header">
                     <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
                     <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                   </div>
                   <div :class="{ 'opacity-50': r.isLoading }"
-                    class="chat-bubble text-xl flex chat-bubble-primary bg-base-300 mont font-semibold">
+                    class="chat-bubble text-xl chat-bubble-primary bg-base-300 mont font-semibold">
                     <span>{{ r.comment }}
-
+                      <br>
                       <span @click="onRemoveRateClick(r, m)" v-if="r.user_id == auth.profile?.user.id"
-                        class="badge badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
+                        class="badge w-full badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
                     </span>
 
                   </div>
