@@ -31,7 +31,8 @@
     --input-color: var(--color-base-300) !important; /* default color */
   }
 
-  *::after {
+  *::after,
+  *::before {
     --divider-color: var(--color-base-300) !important;
   }
 
