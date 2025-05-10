@@ -53,15 +53,14 @@ onMounted(() => {
     </div>
     <div v-else-if="serverResponse.message = 'success'" class="mt-4">
       <div class="card w-full bg-base-100  mx-auto">
-        <div class="card-body p-4">
-          <div class="flex justify-between">
-            <div class="group-wrapper max-w-200 flex gap-4 flex-col lg:flex-row">
-              <AvatarWithPlaceholder class="w-full lg:w-2/3" :url="serverResponse.data?.avatar_url">
-                <span class="text-7xl">{{ serverResponse.data?.name[0].toUpperCase() }}</span>
+        <div class="card-body p-4 lg:p-7">
+          <div class="flex justify-between flex-col lg:flex-row">
+            <div class="group-wrapper w-full flex gap-4 flex-col lg:flex-row">
+              <AvatarWithPlaceholder class="w-full lg:w-2/5 shrink-0" :url="serverResponse.data?.avatar_url">
+                <span class="text-7xl">{{ serverResponse.data?.name[0].toUpperCase() || 'A' }}</span>
               </AvatarWithPlaceholder>
-
               <div class="info">
-                <span class="badge badge-primary">приглашение</span>
+                <span class="badge badge-secondary">приглашение</span>
                 <p class="text-5xl font-black">{{ serverResponse.data?.name }}</p>
                 <p class="mt-4 text-xl">{{ serverResponse.data?.desc }}</p>
               </div>

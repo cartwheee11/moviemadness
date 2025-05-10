@@ -1,13 +1,3 @@
-<script lang="ts" setup>
-import { useSlots } from 'vue';
-
-const slots = useSlots()
-
-
-if (slots['default'])
-  console.log(slots.default ? slots.default() : null)
-</script>
-
 <template>
   <div class="wrapper list bg-base-100 rounded-2xl">
     <slot name="default" class="hello"></slot>

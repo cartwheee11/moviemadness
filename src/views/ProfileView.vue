@@ -136,9 +136,6 @@ onMounted(() => {
     <ListItem class="mt-4">
       <div v-for="(g) in groups" :key="g.id" class="cursor-pointer group flex items-center text-xl !p-6 gap-4"
         @click="router.push('/groups/' + g.id)">
-        <!-- <div class="shrink">
-          {{ i + 1 }}
-        </div> -->
         <strong class="flex gap-5 items-center lg:max-w-1/2">
           <AvatarWithPlaceholder class="w-10 h-10" :url="g?.avatar_url">{{ g.name[0] }}</AvatarWithPlaceholder>
           <span class="truncate max-w-45">{{ g.name }}</span>
@@ -148,7 +145,7 @@ onMounted(() => {
         </div>
         <div class="absolute opacity-0 lg:relative lg:opacity-100 ">{{ new Date(g.created_at as
           string).toLocaleString('ru-RU').split(',')[0]
-          }}
+        }}
         </div>
       </div>
     </ListItem>

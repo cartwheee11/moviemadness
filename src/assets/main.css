@@ -10,12 +10,14 @@
   --color-base-200: #eff6f0;
   --color-base-300: #dae5dc;
   --color-neutral: black;
-  --color-primary: #95ff01;
+  --color-primary: #8bb27a;
   --color-primary-content: black;
   --color-accent: #dff8fd;
   --color-accent-content: #213102;
   --color-info: white;
   --color-info-content: black;
+  --color-secondary: var(--color-base-300);
+  --color-secondary-content: black;
 }
 
 @plugin '@tailwindcss/typography';

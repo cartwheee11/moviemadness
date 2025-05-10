@@ -1,63 +1,264 @@
 <script setup lang="ts">
 // import { ref } from 'vue';
-import type { Movie, Rate, User } from '../../types/shared';
+import type { Group, GroupMovieRemoval, GroupSettingMovieStatus, Movie, Rate, User } from '../../types/shared';
 // import { PAGE_LIMIT } from '../../constants/shared';
 import AsyncButton from './AsyncButton.vue';
 import AvatarWithPlaceholder from './AvatarWithPlaceholder.vue';
 import { useAuth } from '@/stores/auth';
 import ListItem from './ListItem.vue';
+import { onBeforeMount, ref, watch, defineProps } from 'vue';
+import { useRoute } from 'vue-router';
+import { editGroup, getGroup, getRates, removeRate, setMovieRate } from '@/api';
+import ModalWindow from './ModalWindow.vue';
+const route = useRoute()
 
-type CMovie = Movie & { clicked?: boolean, rates?: Rate[], stars?: number, comment?: string }
+type CMovie = Movie & { clicked?: boolean, rates?: CRate[], stars?: number, comment?: string, isLoading?: boolean }
+type CRate = Rate & { isLoading?: boolean }
+const movies = ref<CMovie[]>([])
+const members = ref<Map<string, User>>()
+const group = ref<Group>()
+const isMoviesListBlocked = ref<boolean>(false)
+const moviesIsClear = ref<boolean>(false)
 
-const { movies, members } = defineProps<{
-  movies: Array<CMovie> | undefined,
-  members: Map<string, User> | undefined,
+function updatePage(params: { movies?: Movie[], members?: User[], group: Group }) {
+  if (params.group) {
+    group.value = params.group
+  }
+
+  if (params.movies) {
+    if (params.movies.length === 0) {
+      moviesIsClear.value = true
+    }
+    params.movies.forEach(m => {
+      m.created_at = new Date(m.created_at).toLocaleString('ru-RU').split(',')[0]
+    })
+    movies.value = params.movies
+  }
+
+  if (params.members) {
+    members.value = new Map(params.members.map((user) => [user.id, user]))
+  }
+}
+
+function loadPage() {
+  isMoviesListBlocked.value = true;
+  getGroup(route.params.id as string, currentPage).then(res => {
+    if (!res.data) {
+      return
+    }
+
+    if (res.data.movies.length === 0) {
+      moviesIsClear.value = true
+    }
+
+    isMoviesListBlocked.value = false
+
+    updatePage({
+      group: res.data.group,
+      movies: res.data.movies,
+      members: res.data.members
+    })
+  })
+}
+
+onBeforeMount(() => {
+  loadPage()
+})
+
+const { currentPage = 1 } = defineProps<{
   currentPage: number
 }>()
 
-const emit = defineEmits<{
-  watch: [movieId: string, resolver: () => void],
-  rate: [movieId: string, comment: string, stars: number, resolver: () => void],
-  open: [movieId: string],
-  removeMovie: [movieId: string],
-  unwatch: [movieId: string, resolver: () => void],
-  removeRate: [rateId: string, movieId: string]
-}>()
 
-function onUnwatchClick(movieId: string) {
-  return new Promise<void>((resolve) => {
-    emit('unwatch', movieId, resolve)
+
+watch(() => currentPage, () => {
+  loadPage()
+})
+
+function onWatchClick(m: CMovie) {
+  m.isLoading = true;
+  const promise = new Promise<void>(resolve => {
+    watchMovie(m.id, resolve)
+  })
+
+  promise.then(() => {
+    m.isLoading = false
   })
 }
 
-function onWatchClick(movieId: string) {
-  return new Promise<void>((resolve) => {
-    emit('watch', movieId, resolve)
+function watchMovie(id: string, resolver: () => void) {
+  if (group.value) {
+    const request: GroupSettingMovieStatus = {
+      groupId: group.value.id,
+      aim: 'settingMovieStatus',
+      movieId: id,
+      watched: true
+    }
+
+    editGroup(request, currentPage).then(res => {
+      if (res.data) {
+        updatePage(res.data)
+        resolver()
+      }
+    })
+  } else {
+    resolver()
+  }
+}
+
+function onUnwatchClick(m: CMovie) {
+  m.isLoading = true;
+  const promise = new Promise<void>(resolve => {
+    unwatchMovie(m.id, resolve)
+  })
+
+  promise.then(() => {
+    m.isLoading = false
+  })
+
+  return promise
+}
+
+function unwatchMovie(id: string, resolver: () => void) {
+  if (group.value) {
+    const request: GroupSettingMovieStatus = {
+      groupId: group.value.id,
+      aim: 'settingMovieStatus',
+      movieId: id,
+      watched: false
+    }
+
+    console.log('currentPaage: ' + currentPage)
+
+    editGroup(request, currentPage).then(res => {
+      if (res.data) {
+        updatePage(res.data)
+        resolver()
+      }
+    })
+  } else {
+    resolver()
+  }
+}
+
+function rateMovie(m: CMovie, comment: string, stars: number) {
+  return new Promise<void>(resolver => {
+    if (group.value && comment) {
+      setMovieRate(m.id, comment, stars + '', group.value.id).then(res => {
+        if (res.data) {
+          updateRates(res.data, m)
+
+          m.comment = ''
+
+          resolver()
+        } else {
+          resolver()
+        }
+      })
+    } else {
+      resolver()
+    }
+  })
+
+}
+
+function loadRates(m: CMovie) {
+  if (m.is_watched) {
+    getRates(m.id).then(res => {
+      if (res.data) {
+        m.rates = res.data
+      }
+    })
+  }
+}
+
+function onMovieOpen(movieId: string) {
+  movies.value.forEach(m => {
+    if (m.id === movieId) {
+      m.clicked = !m.clicked
+      loadRates(m)
+    }
+  })
+}
+const removeMovieModal = ref<boolean>(false)
+const movieToRemove = ref<string>('')
+function onRemoveMovieButtonClick() {
+  return new Promise<void>(resolve => {
+    if (!group.value) {
+      return resolve()
+    }
+
+    const params: GroupMovieRemoval = {
+      groupId: group.value?.id,
+      movieId: movieToRemove.value,
+      aim: 'movieRemoval'
+    }
+
+    editGroup(params, currentPage).then((res) => {
+      removeMovieModal.value = false
+      if (!res || !res.data) {
+        return resolve()
+      }
+      updatePage(res.data)
+
+      resolve()
+    })
   })
 }
 
-function onRateClick(movieId: string, comment: string, stars: number) {
-  return new Promise<void>((resolve) => {
-    emit('rate', movieId, comment, stars, resolve)
+function onRemoveRateClick(r: CRate, m: CMovie) {
+  r.isLoading = true;
+  removeRate(r.id).then(res => {
+    if (res.message != 'success') {
+      alert('ошибка')
+      return
+
+    }
+
+    r.isLoading = false
+    m.rates = m.rates?.filter(rate => rate.id != r.id)
   })
 }
-
-// const movieListIsBlocked = ref<boolean>(false)
 
 const auth = useAuth()
+
+
+function updateRates(rates: Rate[], m: CMovie) {
+  m.rates = rates
+}
+
+
+defineExpose<{ loadPage: () => void }>({
+  loadPage
+})
 
 </script>
 
 <template>
-  <ListItem>
-    <div v-for="(m) in movies" :key="m.id" class="text-lg lg:!px-7 lg:!py-5">
-      <div class="cursor-pointer flex items-center gap-10" @click.prevent.stop="$emit('open', m.id)">
-        <input @click.stop="m.is_watched ? onUnwatchClick(m.id) : onWatchClick(m.id)" :checked="m.is_watched" ick.stop
+  <ModalWindow @hide="removeMovieModal = false" :visible="removeMovieModal">
+    <h3 class="font-black text-xl">Удалить фильм?</h3>
+    <p class="mt-4">Это действие нельзя отменить</p>
+    <AsyncButton class="btn btn-primary mt-4" @click="() => onRemoveMovieButtonClick()">
+      Удалить
+    </AsyncButton>
+  </ModalWindow>
+
+  <div v-if="!moviesIsClear && !movies.length" class="section flex justify-center items-center h-100">
+    <div class="skeleton w-full h-100"></div>
+  </div>
+
+  <div v-else-if="!movies.length" class="alert alert-error p-5">
+    <span class="text-lg">У вас пока не добавлено ни одного фильма</span>
+  </div>
+  <ListItem v-else :class="{ 'opacity-50': isMoviesListBlocked }">
+    <div v-for="(m) in movies" :key="m.id" class="text-lg lg:!px-7 lg:!py-5" :class="{ 'opacity-50': m.isLoading }">
+      <div class="cursor-pointer flex items-center gap-10" @click.prevent.stop="onMovieOpen(m.id)">
+        <input @click.stop="m.is_watched ? onUnwatchClick(m) : onWatchClick(m)" :checked="m.is_watched" ick.stop
           type="checkbox" class="checkbox checkbox-success checkbox-lg" />
         <div class="lg:w-2/6">
           <div class="mont font-bold">{{ m.name }}</div>
           <div class="max-w-50 text-gray-400 font-semibold" :class="{ 'truncate': !m.clicked }">{{ m.desc
-          }}</div>
+            }}</div>
         </div>
 
 
@@ -73,7 +274,7 @@ const auth = useAuth()
 
               <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30 text-sm">{{
                 m.created_at
-                }}</span>
+              }}</span>
 
             </div>
           </div>
@@ -84,7 +285,7 @@ const auth = useAuth()
               'не смотрели' }}</span>
           </div>
           <div class="delete-cell text-center">
-            <button @click="$emit('removeMovie', m.id); console.log('hello')"
+            <button @click.stop="movieToRemove = m.id; removeMovieModal = true"
               class="btn border-2 border-base-300 bg-base-100 btn-md btn-circle">
 
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
@@ -121,10 +322,11 @@ const auth = useAuth()
                     <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
                     <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                   </div>
-                  <div class="chat-bubble text-xl flex chat-bubble-primary bg-base-300 mont font-semibold">
+                  <div :class="{ 'opacity-50': r.isLoading }"
+                    class="chat-bubble text-xl flex chat-bubble-primary bg-base-300 mont font-semibold">
                     <span>{{ r.comment }}
 
-                      <span @click="$emit('removeRate', r.id, m.id)" v-if="r.user_id == auth.profile?.user.id"
+                      <span @click="onRemoveRateClick(r, m)" v-if="r.user_id == auth.profile?.user.id"
                         class="badge badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
                     </span>
 
@@ -140,10 +342,10 @@ const auth = useAuth()
                 class="mask mask-star-2" aria-label="1 star" />
             </div>
           </div>
-          <AsyncButton @click="() => onRateClick(m.id, m.comment || '', m.stars || 0,)"
+          <AsyncButton @click="() => rateMovie(m, m.comment || '', m.stars || 0)"
             class="btn btn-lg w-full mt-4 btn-primary">Оценить
           </AsyncButton>
-          <AsyncButton @click="() => onUnwatchClick(m.id)"
+          <AsyncButton @click="() => onUnwatchClick(m)"
             class="mt-4 btn btn-lg w-full bg-base-300 !border-none hover:opacity-80">
             Не просмотрено
           </AsyncButton>
@@ -152,119 +354,4 @@ const auth = useAuth()
     </div>
   </ListItem>
   <br>
-  <!-- <div class="table-wrapper">
-    <table class="table table-lg" :class="{ 'opacity-50': movieListIsBlocked }">
-      <thead>
-        <tr>
-          <th class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell"></th>
-          <th class="lg:w-1/6 w-full">Название</th>
-          <th class="w-1/6 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">Комментарий</th>
-          <th class="w-1/6 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">Дата</th>
-          <th class="w-1/6 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">Добавил</th>
-          <th class="lg:w-1/6 align-center text-center w-0 !p-0">Статус</th>
-          <th class="lg:w-1/6 align-center text-center w-0 !p-0">Удалить</th>
-        </tr>
-      </thead>
-
-      <tbody v-for="(m, i) in movies" :key="m.id">
-        <tr class="hover:bg-base-content/2 cursor-pointer group" @click.prevent.stop="$emit('open', m.id)">
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell">
-            {{ (currentPage - 1) * PAGE_LIMIT
-              + i + 1 }}
-          </td>
-          <th class="py-6 w-max mont">{{ m.name }}</th>
-          <td class="max-w-50 absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell"
-            :class="{ 'truncate': !m.clicked }">{{ m.desc }}</td>
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30">{{ m.created_at }}</td>
-          <td class="absolute opacity-0 lg:relative lg:opacity-100 lg:table-cell lg:z-1 -z-30">
-            {{ members?.get(m.user_id)?.username || 'Аноним' }}
-          </td>
-          <td class="!m-0 lg:w-50 align-center text-center !p-1">
-
-            <AsyncButton @click="() => onWatchClick(m.id)" v-if="!m.is_watched"
-              class="btn border-2 border-base-300 bg-base-100 btn-square lg:btn-block">
-              <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:inline">Посмотреть</span>
-              <span class="lg:hidden">»</span>
-            </AsyncButton>
-
-            <button v-else class="btn btn-square lg:btn-wide btn-primary btn-md group-hover:btn-base">
-              <svg class="size-[1em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt">
-                  <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-linecap="square"
-                    stroke-miterlimit="10" stroke-width="2"></circle>
-                  <polyline points="7 13 10 16 17 8" fill="none" stroke="currentColor" stroke-linecap="square"
-                    stroke-miterlimit="10" stroke-width="2"></polyline>
-                </g>
-              </svg>
-              <span class="absolute opacity-0 lg:relative lg:opacity-100 lg:inline">Посмотрели</span>
-            </button>
-          </td>
-          <td class="delete-cell text-center">
-            <button @click="$emit('removeMovie', m.id); console.log('hello')"
-              class="btn border-2 border-base-300 bg-base-100 btn-md btn-circle">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash"
-                viewBox="0 0 16 16">
-                <path
-                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                <path
-                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-              </svg>
-            </button>
-          </td>
-        </tr>
-        <tr v-if="m.clicked && m.is_watched" class="">
-          <td colspan="7" class="py-4 w-full">
-            <div v-if="!m.rates" class="flex py-10 w-full items-center justify-center">
-              <div class="loading loading-spinner"></div>
-            </div>
-
-            <div v-else-if="m.rates.length == 0" class="p-10 pb-12 text-center">
-              <span class="font-bold">Напиши первый отзыв</span>
-            </div>
-
-            <div class="pb-4" v-else>
-              <div class="m-2 mb-4" v-for="r in m.rates" :key="r.id">
-                <div class="message flex items-end">
-                  <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="members?.get(r.user_id)?.avatar || null">
-                    <span>{{ members?.get(r.user_id)?.username[0].toUpperCase() || 'А' }}</span>
-                  </AvatarWithPlaceholder>
-
-                  <div class="chat chat-start">
-                    <div class="chat-header">
-                      <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
-                      <time class="text-xs opacity-50">{{ r.rate }}/10</time>
-                    </div>
-                    <div class="chat-bubble text-xl flex chat-bubble-accent mont font-semibold">
-                      <span>{{ r.comment }}
-
-                        <span @click="$emit('removeRate', r.id, m.id)" v-if="r.user_id == auth.profile?.user.id"
-                          class="badge badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
-                      </span>
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="flex w-full gap-4 items-center flex-col lg:flex-row">
-              <input type="text" class="input input-lg grow" v-model="m.comment" placeholder="комментарий">
-              <div class="rating rating-lg">
-                <input @click="m.stars = i" v-for="i in 10" :key="i" type="radio" name="rating-10"
-                  class="mask mask-star-2" aria-label="1 star" />
-              </div>
-            </div>
-            <AsyncButton @click="() => onRateClick(m.id, m.comment || '', m.stars || 0,)"
-              class="btn btn-lg w-full mt-4 btn-primary">Оценить
-            </AsyncButton>
-            <AsyncButton @click="() => onUnwatchClick(m.id)"
-              class="mt-4 btn btn-lg w-full bg-base-300 !border-none hover:opacity-80">
-              Не просмотрено
-            </AsyncButton>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-
-
-  </div> -->
 </template>
