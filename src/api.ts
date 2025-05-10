@@ -1,4 +1,5 @@
-const router = useRouter()
+// const router = useRouter()
+import router from '../src/router/index.js'
 
 import type {
   Group,

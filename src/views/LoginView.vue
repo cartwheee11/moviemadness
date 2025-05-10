@@ -56,9 +56,9 @@ function onLoginClick() {
       <input @input="val.login = true; val.pass = true" v-model="pass" type="password"
         :class="{ 'input-error': !val.pass }" class="input input-lg w-full" placeholder="Пароль" />
 
-      <div class="divider"></div>
+      <!-- <div class="divider"></div>s -->
 
-      <button :disabled="isLoginButtonDisabled" @click="onLoginClick" class="btn btn-lg w-full btn-primary">
+      <button :disabled="isLoginButtonDisabled" @click="onLoginClick" class="btn mt-10 btn-lg w-full btn-primary">
         <span v-if="isLoginButtonLoading" class="loading loading-spinner"></span>
         <span v-else>войти</span>
       </button>

@@ -39,6 +39,10 @@
   .input-error {
     --input-color: var(--color-error) !important; /* default color */
   }
+
+  button[disabled] {
+    @apply !bg-base-300;
+  }
 }
 
 @utility hide {

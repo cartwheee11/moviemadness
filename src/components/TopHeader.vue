@@ -33,7 +33,8 @@ function onLogoutClick() {
   <nav class="shadow-xs">
     <div class="container flex justify-between py-4 items-center">
       <RouterLink to="/profile"><b>moviemadness</b></RouterLink>
-      <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn">войти</button></RouterLink>
+      <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn btn-primary">войти</button>
+      </RouterLink>
 
       <div v-else class="flex gap-4">
         <RouterLink to="/profile">

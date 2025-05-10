@@ -74,10 +74,10 @@ function onRegisterButtonClick() {
 
           </label>
 
-          <div class="divider"></div>
+          <!-- <div class="divider"></div> -->
           <p>
             <button @click="onRegisterButtonClick" :disabled="isRegisterButtonDisabled"
-              class="btn w-full btn-primary btn-lg">
+              class="btn w-full btn-primary btn-lg mt-10">
               <span v-if="isRegisterButtonLoading" class="loading loading-spinner"></span>
               <span v-else>зарегистрироваться</span>
             </button>
