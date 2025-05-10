@@ -121,7 +121,7 @@ const auth = useAuth()
                     <b class="ml-4"> {{ members?.get(r.user_id)?.username || 'Аноним' }}</b>
                     <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                   </div>
-                  <div class="chat-bubble text-xl flex chat-bubble-accent mont font-semibold">
+                  <div class="chat-bubble text-xl flex chat-bubble-primary bg-base-300 mont font-semibold">
                     <span>{{ r.comment }}
 
                       <span @click="$emit('removeRate', r.id, m.id)" v-if="r.user_id == auth.profile?.user.id"

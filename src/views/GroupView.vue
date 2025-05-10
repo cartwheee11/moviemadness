@@ -362,12 +362,12 @@ function onChangeSettingsButtonClick() {
         }" @removeRate="onRemoveRateClick" />
 
       <div class="pag flex justify-center">
-        <div class="join mt-4 mx-auto">
+        <div class="join mx-auto">
           <button @click="currentPage = currentPage > 1 ? currentPage - 1 : currentPage"
-            class="join-item btn">«</button>
-          <button class="join-item btn">{{ currentPage }}</button>
+            class="join-item btn btn-info">«</button>
+          <button class="join-item btn btn-info">{{ currentPage }}</button>
           <button v-if="Number(currentPage) * PAGE_LIMIT < Number(group?.movies_count)" @click="currentPage++"
-            class="join-item btn">»</button>
+            class="join-item btn btn-info">»</button>
         </div>
       </div>
     </section>
