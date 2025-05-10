@@ -9,7 +9,7 @@ import ListItem from './ListItem.vue';
 
 type CMovie = Movie & { clicked?: boolean, rates?: Rate[], stars?: number, comment?: string }
 
-const { movies, members, currentPage } = defineProps<{
+const { movies, members } = defineProps<{
   movies: Array<CMovie> | undefined,
   members: Map<string, User> | undefined,
   currentPage: number
