@@ -6,20 +6,8 @@ import AvatarWithPlaceholder from './AvatarWithPlaceholder.vue';
 
 const authStore = useAuth()
 const router = useRouter()
-// const profile = ref<Profile>()
 
 const auth = useAuth()
-// const profile = auth.profile
-
-if (useAuth().auth) {
-
-  // getProfile().then(res => {
-  //   if (res.data) {
-  //     profile.value = res.data?.user
-  //   }
-  // })
-}
-
 
 function onLogoutClick() {
   logout().then(() => {
@@ -29,25 +17,36 @@ function onLogoutClick() {
 </script>
 
 <template>
-
   <nav class="shadow-xs">
     <div class="container flex justify-between py-4 items-center">
-      <RouterLink to="/profile"><b>moviemadness</b></RouterLink>
-      <RouterLink v-if="authStore.auth == undefined" to="/auth/login"><button class="btn btn-primary">войти</button>
+      <RouterLink to="/profile">
+        <b class="flex gap-2 text-lg">
+          <fa class="mt-1.5" :icon="['fas', 'video']" />madness
+        </b>
+      </RouterLink>
+      <RouterLink v-if="authStore.auth == undefined" to="/auth/login">
+        <button class="btn btn-primary">
+          войти
+          <fa :icon="['fas', 'right-to-bracket']" />
+        </button>
       </RouterLink>
 
       <div v-else class="flex gap-4">
-        <RouterLink to="/profile">
+        <RouterLink to="/profile" class="bg-secondary rounded-full flex gap-2 items-center pl-3">
+          <fa class="text-xl text-accent" :icon="['far', 'circle-user']" />
           <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar">
             <span v-if="auth.profile" class="rounded-full">{{ auth.profile?.user.username[0].toUpperCase() || 'А'
-              }}</span>
+            }}</span>
             <span v-else class="rounded-full">
               <div class="loading loading-spinner"></div>
             </span>
           </AvatarWithPlaceholder>
         </RouterLink>
 
-        <button @click="onLogoutClick" class="btn btn-primary">выйти</button>
+        <button @click="onLogoutClick" class="btn btn-primary">
+          выйти
+          <fa :icon="['fas', 'right-from-bracket']" />
+        </button>
       </div>
     </div>
   </nav>
