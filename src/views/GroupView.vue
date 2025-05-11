@@ -16,7 +16,6 @@ const members = ref<Map<string, User>>()
 const addMovieModal = ref(false)
 const currentPage = ref<number>(1)
 const moviesIsClear = ref<boolean>(false)
-const movieListIsBlocked = ref<boolean>(false)
 const changeSettingsInputs = ref({
   name: '',
   about: '',
@@ -25,7 +24,6 @@ const changeSettingsInputs = ref({
 
 const moviesPage = useTemplateRef<ComponentExposed<typeof MoviesPage>>('moviesPage')
 const changeSettingsModal = ref<boolean>(false)
-
 const origin = ref(window.origin)
 
 
@@ -79,14 +77,9 @@ function onAddMovieClick() {
       resolve()
     }
   })
-
-
 }
 
-
-
 function loadGroup() {
-  movieListIsBlocked.value = true;
   getGroup(route.params.id as string, currentPage.value).then(res => {
     if (!res.data) {
       return
@@ -95,8 +88,6 @@ function loadGroup() {
     if (res.data.movies.length === 0) {
       moviesIsClear.value = true
     }
-
-    movieListIsBlocked.value = false
 
     updateGroup({
       group: res.data.group,
@@ -108,7 +99,6 @@ function loadGroup() {
 onMounted(() => {
   loadGroup()
 })
-
 
 function onChangeSettingsButtonClick() {
   return new Promise<void>(resolve => {
@@ -146,7 +136,6 @@ function onChangeSettingsButtonClick() {
         </span>
       </AsyncButton>
     </p>
-
   </ModalWindow>
 
   <ModalWindow @hide="changeSettingsModal = false" :visible="changeSettingsModal">
@@ -172,7 +161,6 @@ function onChangeSettingsButtonClick() {
       <textarea rows="4" v-if="group" type="text" :value="`${origin}/invite/${group.invite_token}`"
         class="textarea w-full" placeholder="Type here"></textarea>
       <div v-else class="skeleton w-full h-10"></div>
-
     </fieldset>
 
     <AsyncButton class="mt-4 btn w-full" @click="() => onChangeSettingsButtonClick()">Отправить</AsyncButton>

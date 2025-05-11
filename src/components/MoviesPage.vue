@@ -252,7 +252,7 @@ defineExpose<{ loadPage: () => void }>({
   </div>
   <ListItem v-else :class="{ 'opacity-50': isMoviesListBlocked }">
     <div v-for="(m) in movies" :key="m.id" class="text-lg lg:!px-7 lg:!py-5" :class="{ 'opacity-50': m.isLoading }">
-      <div class="cursor-pointer flex items-center gap-10" @click.prevent.stop="onMovieOpen(m.id)">
+      <div class="cursor-pointer flex items-center lg:gap-10 gap-4" @click.prevent.stop="onMovieOpen(m.id)">
         <input @click.stop="m.is_watched ? onUnwatchClick(m) : onWatchClick(m)" :checked="m.is_watched" ick.stop
           type="checkbox" class="checkbox checkbox-success checkbox-lg" />
         <div class="lg:w-2/6">
@@ -261,9 +261,8 @@ defineExpose<{ loadPage: () => void }>({
           }}</div>
         </div>
 
-
-        <div class="flex items-center justify-between grow hide lg:show">
-          <div class="flex items-center gap-4  w-1/4">
+        <div class="flex items-center justify-between grow flex-row-reverse lg:flex-row">
+          <div class="flex items-center gap-4 w-1/4 hide lg:show">
             <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="members?.get(m.user_id)?.avatar || null">
               <span>{{ members?.get(m.user_id)?.username[0].toUpperCase() || 'А' }}</span>
             </AvatarWithPlaceholder>
@@ -278,13 +277,15 @@ defineExpose<{ loadPage: () => void }>({
 
             </div>
           </div>
-          <div class="">
+
+          <div class="hide lg:show">
             <span class="badge" :class="{ 'badge-neutral': m.is_watched, 'badge-ghost': !m.is_watched }">{{ m.is_watched
               ?
               "смотрели" :
               'не смотрели' }}</span>
           </div>
-          <div class="delete-cell text-center">
+
+          <div class="text-center self-end">
             <button @click.stop="movieToRemove = m.id; removeMovieModal = true"
               class="btn border-2 border-base-300 bg-base-100 btn-md btn-circle">
 
