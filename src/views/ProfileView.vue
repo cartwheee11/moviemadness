@@ -120,7 +120,10 @@ onMounted(() => {
         <p>
           <b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
         </p>
-        <button @click="editProfileModal = true" class="btn mt-4 btn-info">Редактировать</button>
+        <button @click="editProfileModal = true" class="btn mt-4 btn-info">
+          <fa :icon="['fas', 'gear']" />
+          Редактировать
+        </button>
       </div>
 
 

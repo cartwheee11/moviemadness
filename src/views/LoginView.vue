@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue';
 import * as api from '../api'
 import { useRouter } from 'vue-router';
+
 const login = ref('')
 const pass = ref('')
 const errorMessage = ref('')
@@ -15,6 +16,9 @@ const val = ref({
 const isLoginButtonDisabled = computed(() => {
   return !pass.value.length || !login.value.length || !val.value.login || !val.value.pass
 })
+
+
+
 
 
 function onLoginClick() {

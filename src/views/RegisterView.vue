@@ -1,46 +1,47 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import * as api from '../api'
 import { useRouter } from 'vue-router'
+import { Field, ErrorMessage, useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/zod'
+import shared from '../../schemas/shared/register'
+
 const router = useRouter();
 
-const val = ref({
-  login: true,
-  pass: true,
-  repeatPass: true
+const schema = toTypedSchema(shared)
+
+
+const { errors, meta, validate, handleSubmit } = useForm({
+  validationSchema: schema
 })
 
-
-const login = ref('')
-const pass = ref('')
-const repeatPass = ref('')
-const errorMessage = ref('')
 const isRegisterButtonLoading = ref(false)
-const isRegisterButtonDisabled = computed(() => {
-  return !val.value.login || !val.value.pass || !val.value.repeatPass || !login.value.length || !pass.value.length || !repeatPass.value.length
-})
 
-function onRegisterButtonClick() {
+const onSubmit = handleSubmit((fields) => {
   isRegisterButtonLoading.value = true
-  api.register(login.value, pass.value).then(data => {
+
+  api.register(fields.username, fields.pass).then(data => {
     isRegisterButtonLoading.value = false
     if (data.type == 'error') {
-      errorMessage.value = data.message as string
+      validate()
     } else {
-      api.login(login.value, pass.value).then(() => {
+      api.login(fields.username, fields.pass).then(() => {
         router.push('/profile')
       })
     }
   })
-}
+}, () => {
+  validate()
+})
 </script>
 
 <template>
 
   <div class="container">
+
     <div class="mt-7 mx-auto max-w-100 ">
-      <div class="login-form flex flex-col">
+      <form class="login-form flex flex-col" @submit.prevent="onSubmit">
         <div class="flex justify-center">
           <div class="join rounded-full overflow-hidden">
             <RouterLink to="/auth/login"><button class="btn join-item border-none bg-base-100">Войти</button>
@@ -48,36 +49,24 @@ function onRegisterButtonClick() {
             <button class="btn join-item btn-primary">Зарегистрироваться</button>
           </div>
         </div>
-
         <div class="fieldset rounded-box p-4 mt-4 mx-auto bg-base-100 w-full lg:w-100">
           <label for="" class="label mt-4">Логин</label>
-          <label class="input input-lg w-full" :class="{ 'input-error': !val.login }" type="text">
-            <input v-model="login" class="input-lg w-full" type="input" @input="() => { val.login = login.length >= 6 }"
-              placeholder="вася123">
-            <span v-if="!val.login" class="badge badge-error">больше 6 символов</span>
+          <label class="input input-lg w-full" :class="{ 'input-error': errors.username }" type="text">
+            <Field class="input-lg w-full" name="username" :rules="{ required: false }" />
           </label>
-
+          <ErrorMessage class="badge badge-error" name="username" />
           <label for="" class="label mt-4">Пароль</label>
-          <label class="input input-lg w-full" type="text" :class="{ 'input-error': !val.pass }">
-            <input v-model="pass" class="w-full input-lg"
-              @input="val.pass = pass.length >= 6; val.repeatPass = repeatPass == pass" type="password"
-              placeholder="qwezxc">
-            <span v-if="!val.pass" class="badge badge-error">больше 6 символов</span>
+          <label class="input input-lg w-full" type="text" :class="{ 'input-error': errors.pass }">
+            <Field type="password" class="input-lg w-full" name="pass" />
           </label>
-
+          <ErrorMessage class="badge badge-error" name="pass" />
           <label class="label mt-4">Повторите пароль</label>
-          <label class="input-lg input w-full" type="text" :class="{ 'input-error': !val.repeatPass }">
-
-            <input class="input-lg w-full" v-model="repeatPass" @input="() => { val.repeatPass = repeatPass == pass }"
-              type="password" placeholder="qwezxc">
-            <span v-if="!val.repeatPass" class="badge badge-error">пароли не совпадают</span>
-
+          <label class="input-lg input w-full" type="text" :class="{ 'input-error': errors.confirmPass }">
+            <Field type="password" class="input-lg w-full" name="confirmPass" />
           </label>
-
-          <!-- <div class="divider"></div> -->
+          <ErrorMessage class="badge badge-error" name="confirmPass" />
           <p>
-            <button @click="onRegisterButtonClick" :disabled="isRegisterButtonDisabled"
-              class="btn w-full btn-primary btn-lg mt-10">
+            <button :disabled="!meta.touched" class="btn w-full btn-primary btn-lg mt-10">
               <span v-if="isRegisterButtonLoading" class="loading loading-spinner"></span>
               <span v-else>зарегистрироваться</span>
             </button>
@@ -85,8 +74,7 @@ function onRegisterButtonClick() {
         </div>
 
 
-      </div>
-      <p class="mt-4 text-center text-primary-content">{{ errorMessage }}</p>
+      </form>
     </div>
 
   </div>

@@ -172,8 +172,10 @@ function onChangeSettingsButtonClick() {
         <AvatarWithPlaceholder class="w-20 lg:w-50 lg:h-50 h-20 text-7xl" :url="group?.avatar_url">
           <span class="text-7xl">{{ group?.name[0].toUpperCase() }}</span>
         </AvatarWithPlaceholder>
-        <button @click="changeSettingsModal = true"
-          class="btn btn-info mt-4 w-full hide lg:show lg:visible">Настроить</button>
+        <button @click="changeSettingsModal = true" class="btn btn-info mt-4 w-full hide lg:show lg:visible">
+          <fa :icon="['fas', 'gear']" />
+          Настроить
+        </button>
       </div>
 
       <div class="desk lg:text-left text-center flex flex-col items-center lg:items-start">
@@ -183,7 +185,10 @@ function onChangeSettingsButtonClick() {
           <div class="skeleton h-10 w-50 mt-4"></div>
         </div>
         <p class="mt-4">{{ group?.desc }}</p>
-        <p><button @click="changeSettingsModal = true" class="btn btn-info mt-4 lg:absolute lg:hide">Настроить</button>
+        <p><button @click="changeSettingsModal = true" class="btn btn-info mt-4 lg:absolute lg:hide">
+            <fa :icon="['fas', 'gear']" />
+            Настроить
+          </button>
         </p>
       </div>
     </section>

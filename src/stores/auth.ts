@@ -40,8 +40,10 @@ export const useAuth = defineStore('auth', () => {
   console.log(route)
 
   watch(route, () => {
-    console.log('update profile')
-    updateProfile()
+    if (auth.value) {
+      console.log('update profile')
+      updateProfile()
+    }
   })
 
   function setAuth(a: Auth) {
