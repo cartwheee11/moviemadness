@@ -105,8 +105,7 @@ onMounted(() => {
 
 
   <section class="profile">
-    <div class="container flex gap-4 lg:gap-10 items-center py-20">
-
+    <div class="container flex gap-4 lg:gap-10 items-center py-20 flex-col lg:flex-row">
       <AvatarWithPlaceholder :url="profile?.avatar" class="w-20 h-20 shrink-0 lg:w-40 lg:h-40 text-7xl">
         <span class="lg:text-7xl">{{ profile?.username[0].toUpperCase() }}</span>
       </AvatarWithPlaceholder>
@@ -116,8 +115,8 @@ onMounted(() => {
         <div class="skeleton w-full h-15"></div>
         <div class="skeleton w-50 h-7 mt-4"></div>
       </div>
-      <div v-else class="about">
-        <h1 class="mb-3 font-black truncate max-w-50 md:max-w-full">{{ profile.username }}</h1>
+      <div v-else class="about w-full flex flex-col items-center lg:items-start text-center lg:text-left">
+        <h1 class="mb-3 font-black wrap-break-word max-w-50 md:max-w-full">{{ profile.username }}</h1>
         <p>
           <b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
         </p>
@@ -150,7 +149,7 @@ onMounted(() => {
         </div>
         <div class="absolute opacity-0 lg:relative lg:opacity-100 ">{{ new Date(g.created_at as
           string).toLocaleString('ru-RU').split(',')[0]
-        }}
+          }}
         </div>
       </div>
     </ListItem>
