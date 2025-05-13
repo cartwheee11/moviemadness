@@ -14,7 +14,6 @@ export default async function setMovieRating(req: VercelRequest, res: VercelResp
 
     await db`delete from movies where id = ${params.movieId}`
 
-    // const response: ResponseBody<Group>
     const dbResponse = await getGroup(groupId, body.page)
     if (!dbResponse) {
       return res.status(422).json({ message: 'group is not defined' })

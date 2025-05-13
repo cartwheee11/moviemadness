@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref, watch, useTemplateRef } from 'vue';
-import { useRoute } from 'vue-router';
-import { getGroup, editGroup } from '@/api';
+import { useRoute, useRouter } from 'vue-router';
+import { getGroup, editGroup, removeGroup } from '@/api';
 import type { Group, GroupMovieAddition, User, GroupChangingSettings } from '../../types/shared';
 import ModalWindow from '@/components/ModalWindow.vue'
 import { PAGE_LIMIT } from '../../constants/shared'
@@ -11,6 +11,7 @@ import MoviesPage from '@/components/MoviesPage.vue';
 import type { ComponentExposed } from 'vue-component-type-helpers'
 
 const route = useRoute()
+const router = useRouter()
 const group = ref<Group>()
 const members = ref<Map<string, User>>()
 const addMovieModal = ref(false)
@@ -96,9 +97,28 @@ function loadGroup() {
   })
 }
 
+const removeGroupModal = ref({
+  visible: false,
+  text: ''
+})
+
 onMounted(() => {
   loadGroup()
 })
+
+function onRemoveGroupClick() {
+  if (group.value) {
+    removeGroup(group.value.id).then(res => {
+      if (res.message !== 'success') {
+        removeGroupModal.value.text = 'Вы не являетесь создателем группы'
+        removeGroupModal.value.visible = true
+        return
+      }
+
+      router.push('/profile')
+    })
+  }
+}
 
 function onChangeSettingsButtonClick() {
   return new Promise<void>(resolve => {
@@ -125,6 +145,12 @@ function onChangeSettingsButtonClick() {
 </script>
 
 <template>
+  <ModalWindow :visible="removeGroupModal.visible" @hide="removeGroupModal.visible = false">
+    <h3 class="text-xl font-bold">{{ removeGroupModal.text }}</h3>
+    <br>
+    <button class="btn" @click="onRemoveGroupClick">Удалить</button>
+  </ModalWindow>
+
   <ModalWindow @hide="addMovieModal = false" :visible="addMovieModal">
     <h3 class="font-black text-xl pb-4">Добавить фильм</h3>
     <p><input v-model="addMovieName" class="input" type="text" placeholder="Название фильма"></p>
@@ -163,6 +189,12 @@ function onChangeSettingsButtonClick() {
       <div v-else class="skeleton w-full h-10"></div>
     </fieldset>
 
+    <button class="btn btn-error w-full mt-4" @click="
+      removeGroupModal.visible = true;
+    changeSettingsModal = false
+    removeGroupModal.text = 'Вы действительно хотите удалить группу? Это действие нельзя отменить'
+      ">удалить группу</button>
+
     <AsyncButton class="mt-4 btn w-full" @click="() => onChangeSettingsButtonClick()">Отправить</AsyncButton>
   </ModalWindow>
   <div class="container">
@@ -192,7 +224,6 @@ function onChangeSettingsButtonClick() {
         </p>
       </div>
     </section>
-
 
     <h2 class="text-3xl font-black mb-5">Идеи для просмотра</h2>
     <button @click="addMovieModal = true" class="add-table-row-button mb-4">+</button>

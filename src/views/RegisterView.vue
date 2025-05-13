@@ -1,47 +1,63 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { RouterLink } from 'vue-router';
+import { ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import * as api from '../api'
 import { useRouter } from 'vue-router'
 import { Field, ErrorMessage, useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import shared from '../../schemas/shared/register'
+import shared from '../../schemas/client/register'
+import ModalWindow from '@/components/ModalWindow.vue'
 
-const router = useRouter();
+const router = useRouter()
 
 const schema = toTypedSchema(shared)
 
-
 const { errors, meta, validate, handleSubmit } = useForm({
-  validationSchema: schema
+  validationSchema: schema,
+})
+
+const errorModal = ref({
+  visible: false,
+  text: ''
 })
 
 const isRegisterButtonLoading = ref(false)
 
-const onSubmit = handleSubmit((fields) => {
-  isRegisterButtonLoading.value = true
+const onSubmit = handleSubmit(
+  (fields) => {
+    isRegisterButtonLoading.value = true
 
-  api.register(fields.username, fields.pass).then(data => {
-    isRegisterButtonLoading.value = false
-    if (data.type == 'error') {
-      validate()
-    } else {
-      api.login(fields.username, fields.pass).then(() => {
+    api.register(fields.username, fields.pass).then((data) => {
+      if (data.message == 'success') {
         router.push('/profile')
-      })
-    }
-  })
-}, () => {
-  validate()
-})
+      } else {
+
+        errorModal.value.text = data.message
+        errorModal.value.visible = true
+      }
+      isRegisterButtonLoading.value = false
+    })
+  },
+  () => {
+    validate()
+  },
+)
 </script>
 
 <template>
+  <ModalWindow :visible="errorModal.visible">
+    <h3 class=' font-bold text-xl'>
+      {{
+        errorModal.text
+      }}
 
+    </h3>
+    <br>
+    <button @click="errorModal.visible = false" class="btn btn-primary">Понятно</button>
+  </ModalWindow>
   <div class="container">
-
-    <div class="mt-7 mx-auto max-w-100 ">
-      <form class="login-form flex flex-col" @submit.prevent="onSubmit">
+    <div class="mt-7 mx-auto max-w-100">
+      <form class="login-form flex flex-col" @keydown.enter="onSubmit" @submit.prevent="onSubmit">
         <div class="flex justify-center">
           <div class="join rounded-full overflow-hidden">
             <RouterLink to="/auth/login"><button class="btn join-item border-none bg-base-100">Войти</button>
@@ -72,11 +88,7 @@ const onSubmit = handleSubmit((fields) => {
             </button>
           </p>
         </div>
-
-
       </form>
     </div>
-
   </div>
-
 </template>

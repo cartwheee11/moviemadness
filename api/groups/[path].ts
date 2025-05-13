@@ -4,9 +4,10 @@ import getGroup from '../../api-handlers/groups/getGroup.js'
 import getProfile from '../../api-handlers/groups/getProfile.js'
 import getRates from '../../api-handlers/groups/getRates.js'
 import removeRate from '../../api-handlers/groups/removeRate.js'
+import remove from '../../api-handlers/groups/remove.js'
 
 import resolveHandlers from '../../service/resolveHandlers.js'
 
-const handlers = { findInvite, getGroup, getProfile, getRates, add, removeRate }
+const handlers = { findInvite, getGroup, getProfile, getRates, add, removeRate, remove }
 
 export default resolveHandlers(handlers)

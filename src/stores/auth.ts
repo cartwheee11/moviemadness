@@ -1,63 +1,49 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
-import type { Auth, Group, Profile } from '../../types/shared'
-import { getProfile } from '@/api'
+import type { Profile } from '../../types/shared'
+import { auth } from '@/api'
 import { useRoute } from 'vue-router'
 
 // FIXME добавить работу с api (login, register, logout) сюда
 export const useAuth = defineStore('auth', () => {
-  const auth = ref<Auth>()
-
   // TODO убрать спагетти
-
-  const cached = localStorage.getItem('auth')
-  if (cached) {
-    const parsed = JSON.parse(cached) as unknown
-
-    if (parsed && typeof parsed == 'object') {
-      if ('username' in parsed) {
-        if (typeof parsed.username == 'string') {
-          auth.value = parsed as Auth
-        }
-      }
-    }
-  }
-
   const route = useRoute()
-  const profile = ref<{ groups: Group[]; user: Profile }>()
+  const profile = ref<Profile>()
+  const authorized = ref<boolean>()
 
   function updateProfile() {
-    getProfile().then((res) => {
-      if (!res.data) {
+    auth().then((res) => {
+      console.log(res)
+      if (!res.ok) {
+        profile.value = undefined
+        authorized.value = false
         return
       }
 
-      const data = res.data
-      profile.value = data
-    })
-  }
+      authorized.value = true
 
-  console.log(route)
+      res.json().then((p) => {
+        console.log(p)
+
+        profile.value = p.data
+      })
+    })
+    // getProfile()
+    //   .then((res) => {
+    //     if (!res.data) {
+    //       return
+    //     }
+
+    //     const data = res.data
+    //     profile.value = data
+    //   })
+    //   .catch((error) => console.log(error))
+  }
 
   watch(route, () => {
-    if (auth.value) {
-      console.log('update profile')
-      updateProfile()
-    }
+    console.log('trying to update profile info')
+    updateProfile()
   })
 
-  function setAuth(a: Auth) {
-    console.log('получили auth: ' + a)
-    auth.value = a
-
-    console.log(auth.value)
-    localStorage.setItem('auth', JSON.stringify(a))
-  }
-
-  function removeAuth() {
-    auth.value = undefined
-    localStorage.removeItem('auth')
-  }
-
-  return { auth, setAuth, removeAuth, profile }
+  return { profile, authorized }
 })

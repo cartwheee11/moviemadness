@@ -259,7 +259,7 @@ defineExpose<{ loadPage: () => void }>({
         <div class="lg:w-2/6">
           <div class="mont font-bold">{{ m.name }}</div>
           <div class="max-w-50 text-gray-400 font-semibold" :class="{ 'truncate': !m.clicked }">{{ m.desc
-          }}</div>
+            }}</div>
         </div>
 
         <div class="flex items-center justify-between grow flex-row-reverse lg:flex-row">
@@ -274,7 +274,7 @@ defineExpose<{ loadPage: () => void }>({
 
               <span class="text-sm">{{
                 m.created_at
-                }}</span>
+              }}</span>
 
             </div>
           </div>
@@ -325,7 +325,7 @@ defineExpose<{ loadPage: () => void }>({
                     class="chat-bubble text-xl chat-bubble-primary bg-base-300 mont font-semibold">
                     <span>{{ r.comment }}
                       <br>
-                      <span @click="onRemoveRateClick(r, m)" v-if="r.user_id == auth.profile?.user.id"
+                      <span @click="onRemoveRateClick(r, m)" v-if="r.user_id == auth.profile?.id"
                         class="badge w-full badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
                     </span>
 

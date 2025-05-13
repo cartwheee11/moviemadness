@@ -19,6 +19,8 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
     const { name } = body
 
+    const creator = session.user_id
+
     if (!name) {
       res.json({ type: 'error', message: 'имя группы не может быть пустым' })
       return
@@ -26,7 +28,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
 
     await db`
       with new_group as (
-        insert into groups (name) values (${name})
+        insert into groups (name, creator) values (${name}, ${creator})
         returning id
       )
 

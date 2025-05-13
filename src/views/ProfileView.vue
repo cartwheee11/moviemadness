@@ -3,13 +3,16 @@ import { createGroup, editProfile, getProfile } from '@/api'
 import { onMounted, ref, watch } from 'vue'
 import ModalWindow from '@/components/ModalWindow.vue'
 import type { Profile } from '../../types/shared'
-// import router from '@/router'
 import AvatarWithPlaceholder from '../components/AvatarWithPlaceholder.vue'
 import AsyncButton from '@/components/AsyncButton.vue'
 import ListItem from '@/components/ListItem.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
+//TODO: пагинация
+//TODO: группы выводятся в обратном порядке
+//TODO: УДАЛЕНИЕ ГРУППЫ
 
 const groups = ref()
 const isError = ref(false)
@@ -28,8 +31,6 @@ watch(profile, () => {
     avatar: profile.value?.avatar || ''
   }
 })
-
-
 
 function updateProfile(user: Profile) {
   profile.value = user
@@ -121,6 +122,7 @@ onMounted(() => {
           <b>На сайте с </b>{{ new Date(profile.created_at as string).toLocaleString('ru-RU').split(',')[0] }}
         </p>
         <button @click="editProfileModal = true" class="btn mt-4 btn-info">
+          <!-- Если пользователь меняет ник на уже существущий срабатывает internal error 500 -->
           <fa :icon="['fas', 'gear']" />
           Редактировать
         </button>
@@ -131,7 +133,7 @@ onMounted(() => {
 
   </section>
 
-  <section class="container !py-0 !pb-50">
+  <section class="container !py-0 !pb-10">
     <h2>Мои группы</h2>
     <button @click="createGroupModal = true" class="add-table-row-button mt-4">+</button>
 

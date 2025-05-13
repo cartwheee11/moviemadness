@@ -8,10 +8,10 @@ import type {
   Profile,
   GroupSettingMovieRating,
   GroupMemberAddition,
-  Auth,
 } from '../types/shared'
 
 import type {
+  AuthResponseData,
   EditGroupRequestBody,
   EditProfileRequestBody,
   EditProfileResponseData,
@@ -27,16 +27,13 @@ import type {
 } from '../types/contracts'
 
 const baseURL = ''
-import { useAuth } from './stores/auth'
 
 async function fetchWithMiddleware(url: string, opts: RequestInit) {
   const res = fetch(url, opts)
 
   res.then(({ status }) => {
     if (status == 401) {
-      const auth = useAuth()
       router.push('/auth/login')
-      auth.removeAuth()
     }
   })
 
@@ -44,7 +41,7 @@ async function fetchWithMiddleware(url: string, opts: RequestInit) {
 }
 
 export async function register(username: string, pass: string) {
-  const { setAuth } = useAuth()
+  // const { setAuth } = useAuth()
   const res = await fetch(baseURL + '/api/auth/register', {
     method: 'POST',
     body: JSON.stringify({ username, pass }),
@@ -54,24 +51,32 @@ export async function register(username: string, pass: string) {
     credentials: 'include',
   })
 
-  // TODO: поменять type == success на соответствующее контракту поле (внедрить контракт)
-  const data = (await res.json()) as Record<string, string | Auth>
-  if (data.type == 'success') {
-    const auth = data.auth as Auth
-    setAuth(auth)
-  }
+  const data = (await res.json()) as ResponseBody
+  // if (data.type == 'success') {
+  //   const auth = data.auth as Auth
+  //   setAuth(auth)
+  // }
 
   return await data
 }
 
+export async function auth() {
+  const res = await fetch(baseURL + '/api/auth/auth', {
+    method: 'post',
+    credentials: 'include',
+  })
+
+  return res as Omit<Response, 'json'> & { json: () => Promise<ResponseBody<AuthResponseData>> }
+}
+
 export async function logout() {
-  const { removeAuth } = useAuth()
+  // const { removeAuth } = useAuth()
   const res = await fetch(baseURL + '/api/auth/logout', {
     method: 'post',
     credentials: 'include',
   })
 
-  removeAuth()
+  // removeAuth()
   return res
 }
 
@@ -80,8 +85,6 @@ export async function login(username: string, pass: string) {
     username,
     pass,
   }
-
-  const { setAuth } = useAuth()
 
   const res = await fetch(baseURL + '/api/auth/login', {
     method: 'POST',
@@ -94,11 +97,6 @@ export async function login(username: string, pass: string) {
 
   const body = (await res.json()) as ResponseBody<LoginResponseData>
 
-  if (body.data) {
-    const auth = body.data.auth
-    setAuth(auth)
-  }
-
   return body
 }
 
@@ -109,6 +107,21 @@ export async function getProfile() {
   })
 
   const data: ResponseBody<{ groups: Group[]; user: Profile }> = await res?.json()
+
+  return data
+}
+
+export async function removeGroup(groupId: string) {
+  const res = await fetchWithMiddleware(baseURL + '/api/groups/remove', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({ groupId }),
+    credentials: 'include',
+  })
+
+  const data = (await res.json()) as ResponseBody
 
   return data
 }

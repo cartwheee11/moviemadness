@@ -4,7 +4,6 @@ import { useAuth } from '@/stores/auth';
 import { logout } from '@/api';
 import AvatarWithPlaceholder from './AvatarWithPlaceholder.vue';
 
-const authStore = useAuth()
 const router = useRouter()
 
 const auth = useAuth()
@@ -24,19 +23,18 @@ function onLogoutClick() {
           <fa class="mt-1.5" :icon="['fas', 'video']" />madness
         </b>
       </RouterLink>
-      <RouterLink v-if="authStore.auth == undefined" to="/auth/login">
+      <RouterLink v-if="!auth.authorized" to="/auth/login">
         <button class="btn btn-primary">
           войти
           <fa :icon="['fas', 'right-to-bracket']" />
         </button>
       </RouterLink>
-
       <div v-else class="flex gap-4">
         <RouterLink to="/profile" class="bg-secondary rounded-full flex gap-2 items-center pl-3">
           <fa class="text-xl text-accent" :icon="['far', 'circle-user']" />
-          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.user.avatar">
-            <span v-if="auth.profile" class="rounded-full">{{ auth.profile?.user.username[0].toUpperCase() || 'А'
-            }}</span>
+          <AvatarWithPlaceholder class="h-10 w-10 shrink-0" :url="auth.profile?.avatar">
+            <span v-if="auth.authorized" class="rounded-full">{{ auth.profile?.username[0].toUpperCase() || 'А'
+              }}</span>
             <span v-else class="rounded-full">
               <div class="loading loading-spinner"></div>
             </span>
