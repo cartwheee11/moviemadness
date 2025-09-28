@@ -11,12 +11,6 @@ const props = defineProps<{ url?: string | null | undefined }>()
   </div>
   <div v-else-if="props.url === undefined" class="skeleton"></div>
 
-  <!-- <div v-else-if="!props.url" class="avatar avatar-placeholder">
-    <div class="bg-neutral text-neutral-content w-full rounded-full">
-      <span class="text-3xl">D</span>
-    </div>
-  </div> -->
-
   <div v-else-if="!props.url" class="avatar avatar-placeholder">
     <div class="bg-base-300 text-primary-content rounded-3xl w-full">
       <span class="text-xl">

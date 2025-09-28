@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "test": "yarn vitest run ./**/*.test.ts",
     "devWithLog": "vite --debug hmr --host",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
@@ -32,7 +33,6 @@
     "zod": "^3.24.4"
   },
   "devDependencies": {
-    "@prisma/client": "^6.5.0",
     "@tsconfig/node22": "^22.0.0",
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.13.16",
@@ -41,6 +41,7 @@
     "@vue/eslint-config-prettier": "^10.2.0",
     "@vue/eslint-config-typescript": "^14.5.0",
     "@vue/tsconfig": "^0.7.0",
+    "dotenv": "^16.5.0",
     "eslint": "^9.21.0",
     "eslint-plugin-vue": "~10.0.0",
     "jiti": "^2.4.2",
@@ -51,6 +52,7 @@
     "vercel": "^41.4.1",
     "vite": "^6.2.1",
     "vite-plugin-vue-devtools": "^7.7.2",
+    "vitest": "^3.1.4",
     "vue-component-type-helpers": "^2.2.10",
     "vue-tsc": "^2.2.8"
   },

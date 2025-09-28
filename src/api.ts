@@ -41,7 +41,6 @@ async function fetchWithMiddleware(url: string, opts: RequestInit) {
 }
 
 export async function register(username: string, pass: string) {
-  // const { setAuth } = useAuth()
   const res = await fetch(baseURL + '/api/auth/register', {
     method: 'POST',
     body: JSON.stringify({ username, pass }),
@@ -52,11 +51,6 @@ export async function register(username: string, pass: string) {
   })
 
   const data = (await res.json()) as ResponseBody
-  // if (data.type == 'success') {
-  //   const auth = data.auth as Auth
-  //   setAuth(auth)
-  // }
-
   return await data
 }
 
