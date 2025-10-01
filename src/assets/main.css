@@ -3,10 +3,36 @@
 @import 'tailwindcss';
 
 @plugin 'daisyui' {
-  themes: pastel --default;
+  themes: all;
 }
 
-:root {
+[data-theme='sunset'] {
+  button {
+    @apply rounded-full;
+  }
+
+  .checkbox {
+    border-color: var(--color-underline-100);
+    border-width: 3px;
+  }
+
+  .checkbox[checked] {
+    background-color: var(--color-info);
+  }
+}
+
+[data-theme='pastel'] {
+  * {
+    --input-color: var(--color-base-300) !important; /* default color */
+  }
+}
+
+@theme {
+  --color-underline-100: red;
+}
+
+@plugin 'daisyui/theme' {
+  name: 'pastel';
   --color-base-200: #eff6f0;
   --color-base-300: #dae5dc;
   --color-neutral: black;
@@ -18,6 +44,35 @@
   --color-info-content: black;
   --color-secondary: var(--color-base-300);
   --color-secondary-content: black;
+  --color-underline-100: var(--color-gray-100);
+}
+
+@plugin 'daisyui/theme' {
+  name: 'sunset';
+  --color-primary: var(--color-info);
+  --color-accent: var(--color-info);
+  --color-accent-content: #213102;
+  --color-secondary: var(--color-base-300);
+  --color-underline-100: #1b272e;
+  --color-secondary-content: var(--color-info);
+  --color-neutral: var(--color-info);
+  --color-neutral-content: black;
+  --color-success-content: black;
+  /* --color-primary-content: var(--color-base-content); */
+}
+
+:root {
+  /* --color-base-200: #eff6f0;
+  --color-base-300: #dae5dc;
+  --color-neutral: black;
+  --color-primary: #8bb27a;
+  --color-primary-content: black;
+  --color-accent: #35472e;
+  --color-accent-content: #213102;
+  --color-info: white;
+  --color-info-content: black;
+  --color-secondary: var(--color-base-300);
+  --color-secondary-content: black; */
 }
 
 @plugin '@tailwindcss/typography';
@@ -27,10 +82,6 @@
 }
 
 @layer base {
-  * {
-    --input-color: var(--color-base-300) !important; /* default color */
-  }
-
   *::after,
   *::before {
     --divider-color: var(--color-base-300) !important;

@@ -134,7 +134,7 @@ onMounted(() => {
 
   <section class="container !py-0 !pb-10">
     <h2>Мои группы</h2>
-    <button @click="createGroupModal = true" class="add-table-row-button mt-4">+</button>
+    <button @click="createGroupModal = true" class="add-table-row-button mt-4 !rounded-2xl">+</button>
 
     <div v-if="!profile?.id" class="skeleton w-full h-100 mt-4"></div>
     <ListItem class="mt-4">

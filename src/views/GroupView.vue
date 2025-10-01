@@ -226,11 +226,11 @@ function onChangeSettingsButtonClick() {
     </section>
 
     <h2 class="text-3xl font-black mb-5">Идеи для просмотра</h2>
-    <button @click="addMovieModal = true" class="add-table-row-button mb-4">+</button>
+    <button @click="addMovieModal = true" class="add-table-row-button mb-4 !rounded-2xl">+</button>
     <MoviesPage ref="moviesPage" :currentPage="currentPage" />
 
     <div class="pag flex justify-center">
-      <div class="join mx-auto">
+      <div class="!join !mx-auto !rounded-full overflow-hidden">
         <button @click="currentPage = currentPage > 1 ? currentPage - 1 : currentPage"
           class="join-item btn btn-info">«</button>
         <button class="join-item btn btn-info">{{ currentPage }}</button>

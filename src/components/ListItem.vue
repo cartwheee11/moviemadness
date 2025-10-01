@@ -13,6 +13,6 @@
 }
 
 .wrapper> ::v-deep(*):not(:first-child) {
-  @apply border-t-2 border-gray-100 border-solid;
+  @apply border-t-2 border-underline-100 border-solid;
 }
 </style>
