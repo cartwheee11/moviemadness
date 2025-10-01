@@ -12,7 +12,6 @@ const router = useRouter()
 
 //TODO: пагинация
 //TODO: группы выводятся в обратном порядке
-//TODO: УДАЛЕНИЕ ГРУППЫ
 
 const groups = ref()
 const isError = ref(false)
@@ -137,9 +136,11 @@ onMounted(() => {
     <button @click="createGroupModal = true" class="add-table-row-button mt-4 !rounded-2xl">+</button>
 
     <div v-if="!profile?.id" class="skeleton w-full h-100 mt-4"></div>
+    <!-- TODO: потом когда буду делать пагинацию убрать реверс и сделать нормальный запрос в бд с уже перевернутым order -->
     <ListItem class="mt-4">
-      <div v-for="(g) in groups" :key="g.id" class="cursor-pointer group flex items-center text-xl !p-6 gap-4"
-        @click="router.push('/groups/' + g.id)">
+
+      <div v-for="(g) in groups?.slice().reverse()" :key="g.id"
+        class="cursor-pointer group flex items-center text-xl !p-6 gap-4" @click="router.push('/groups/' + g.id)">
         <strong class="flex gap-5 items-center lg:max-w-1/2">
           <AvatarWithPlaceholder class="w-10 h-10" :url="g?.avatar_url">{{ g.name[0] }}</AvatarWithPlaceholder>
           <span class="truncate max-w-45">{{ g.name }}</span>
