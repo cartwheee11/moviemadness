@@ -55,7 +55,7 @@ const onSubmit = handleSubmit(
     <br>
     <button @click="errorModal.visible = false" class="btn btn-primary">Понятно</button>
   </ModalWindow>
-  <div class="container">
+  <div class="container" @keyup.enter="onSubmit">
     <div class="mt-7 mx-auto max-w-100">
       <form class="login-form flex flex-col" @keydown.enter="onSubmit" @submit.prevent="onSubmit">
         <div class="flex justify-center">
