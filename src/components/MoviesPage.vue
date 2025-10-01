@@ -322,8 +322,9 @@ defineExpose<{ loadPage: () => void }>({
                     <time class="text-xs opacity-50">{{ r.rate }}/10</time>
                   </div>
                   <div :class="{ 'opacity-50': r.isLoading }"
-                    class="chat-bubble text-xl chat-bubble-primary bg-base-300 mont font-semibold">
-                    <span>{{ r.comment }}
+                    class="chat-bubble text-xl chat-bubble-info-content bg-base-300 mont font-semibold">
+                    <span>
+                      <span class="">{{ r.comment }}</span>
                       <br>
                       <span @click="onRemoveRateClick(r, m)" v-if="r.user_id == auth.profile?.id"
                         class="badge w-full badge-sm badge-ghost opacity-50 cursor-pointer">удалить</span>
