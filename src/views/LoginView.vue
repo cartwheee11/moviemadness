@@ -38,7 +38,7 @@ function onLoginClick() {
 </script>
 
 <template>
-  <div class="container flex items-center flex-col">
+  <div @keyup.enter="onLoginClick" class="container flex items-center flex-col">
     <div class="join overflow-hidden rounded-full mt-7">
       <button class="btn join-item btn-primary">Войти</button>
 
